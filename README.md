@@ -1,37 +1,26 @@
-# agent-web
+# debug-online
 
 #### 介绍
 在线web服务调试系统
 
 #### 软件架构
 软件架构说明
+项目氛围两个主体
+1.  debug-online-agent
+以跟踪并记录具体数据的项目执行流程数据。通过项目启动时加载该包完成项目数据监控的切入
+2.  debug-online-dashboard
+以收集agent包传递过来的数据并进行可视化界面展示
 
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  启动dashboard客户端，直接package或者install 模块 debug-online-dashboard,生成jar包，并按照启动spring-boot的jar启动方式启动即可
+2.  下载debug-agent.jar这个包，这个包在dashboard项目resources/static/data目录下
+3.  在具体项目应用中，添加jvm启动参数 -javaagent:debug-agent.jar='regexp'
+3.  打开dashboard客户端，可以看到具体机器已经注册到了dashboard上，可以开始进行项目调试
 
 #### 使用说明
 
 1.  xxxx
 2.  xxxx
 3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)

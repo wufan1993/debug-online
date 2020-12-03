@@ -91,16 +91,7 @@ public class MethodIntercept {
             //LogTrack.appendLog("输出一个测试名称======================="+param.getTypeName());
             //判断对象大小
             if (InterceptStatus.containMethodParamList(typeMethod) || flag) {
-                param.setArgs(Arrays.stream(args).filter(Objects::nonNull).map(arg -> {
-                    long l = ObjectSizeFetcher.getMb(arg);
-                    if (l > 50) {
-                        //不一定管用
-                        //如果大于15M 则不记录
-                        LogTrack.appendLog("获取入参对象大小==》》》》\t" + arg.getClass().toString() + "大小\t" + l + "M");
-                        return arg.getClass().toString() + "参数\t" + l;
-                    }
-                    return arg;
-                }).toArray());
+                param.setArgs(args);
             }
 
             //发送1
@@ -115,16 +106,7 @@ public class MethodIntercept {
                 //输出出参数
                 ProcessAgent processReturn = new ProcessAgent(process, 1);
                 processReturn.setCostTime(System.currentTimeMillis() - start);
-
-                if (InterceptStatus.containMethodParamList(typeMethod) || flag) {
-                    long l = ObjectSizeFetcher.getMb(call);
-                    if (l > 15) {
-                        LogTrack.appendLog("获取返回对象大小==》》》》\t" + call.getClass().toString() + "大小\t" + l + "M");
-                        processReturn.setMessage(call.getClass().toString() + "大对象\t" + l);
-                    } else {
-                        processReturn.setRes(call);
-                    }
-                }
+                processReturn.setRes(call);
 
                 if (status == 2) {
                     processReturn.setMessage(processReturn.getMessage() + "调用深度+");

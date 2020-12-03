@@ -1,7 +1,5 @@
 package com.jddj.o2o;
 
-import com.wufan.debug.online.agent.plugin.ObjectSizeFetcher;
-
 import java.util.ArrayList;
 import java.util.List;
 
