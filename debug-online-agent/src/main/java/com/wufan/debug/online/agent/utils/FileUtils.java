@@ -8,14 +8,14 @@ import java.nio.channels.FileChannel;
 import java.util.function.Consumer;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2020-11-24
- * Time:18:11:55
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:22
  * Description:FileUtils.java
  *
  * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2020 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class FileUtils {
 
@@ -58,7 +58,7 @@ public class FileUtils {
                */
             file.delete();
         } catch (Exception e) {
-            System.out.println("Exception occured"+e.getMessage());
+            System.out.println("Exception occured" + e.getMessage());
         }
     }
 }

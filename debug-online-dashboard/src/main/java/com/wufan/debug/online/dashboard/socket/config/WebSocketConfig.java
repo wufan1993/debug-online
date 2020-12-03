@@ -7,14 +7,14 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2019-10-31
- * Time:16:24
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:25
  * Description:WebSocketConfig.java
  *
- * @author wufan wufan02@imdada.cn
+ * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2019 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @Configuration
 @EnableWebSocket

@@ -1,12 +1,12 @@
 package com.wufan.debug.online.dashboard.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import com.wufan.debug.online.dashboard.socket.config.AgentClient;
 import com.wufan.debug.online.dashboard.socket.config.AgentList;
 import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.socket.server.AgentClientServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,19 +16,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.websocket.Session;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2019-11-01
- * Time:10:33
- * Description:ExecShController.java
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:46
+ * Description:AgentController.java
  *
- * @author wufan wufan02@imdada.cn
+ * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2019 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @Controller
 @RequestMapping("/agent")
@@ -51,7 +54,7 @@ public class AgentController {
         AgentRemoteServerEndpoint.userText.put(username, new HashMap<>());
 
         //如果当前存在会话，那么关闭之前的会话
-        if(WebSocketSession.AGENT_CLIENT.getLivingSessions().containsKey(username)){
+        if (WebSocketSession.AGENT_CLIENT.getLivingSessions().containsKey(username)) {
             model.addAttribute("message", "当前会话已存在，无法新建会话连接");
             return "/modules/agent/pages-error.html";
         }
@@ -96,8 +99,8 @@ public class AgentController {
                 agent.setPid(-1);
                 agent.setId(integer.getAndIncrement());
                 agent.setRootId(k);
-                if(!CollectionUtils.isEmpty(v) && v.size()>0){
-                    ProcessAgent agentDataOne=v.get(0);
+                if (!CollectionUtils.isEmpty(v) && v.size() > 0) {
+                    ProcessAgent agentDataOne = v.get(0);
                     agent.setTypeName(agentDataOne.getTypeName());
                     agent.setMethodName(agentDataOne.getMethod());
                     agent.setEnterName(agentDataOne.getEnterTime());
@@ -121,11 +124,11 @@ public class AgentController {
                 processAgents = stringListMap.get(rootId);
                 processAgents.forEach(processAgent -> {
                     //debugPort
-                    if(processAgent.getPid()==0){
+                    if (processAgent.getPid() == 0) {
                         processAgent.setPid(-1);
                     }
-                    String typeMethod=processAgent.getTypeName()+"#"+processAgent.getMethod();
-                    if((AgentClientServerEndpoint.userMethodMap.get(username).contains(typeMethod))){
+                    String typeMethod = processAgent.getTypeName() + "#" + processAgent.getMethod();
+                    if ((AgentClientServerEndpoint.userMethodMap.get(username).contains(typeMethod))) {
                         processAgent.setDebugPort(true);
                     }
                 });
@@ -139,10 +142,10 @@ public class AgentController {
         Map<String, Object> object = new HashMap<>();
         object.put("code", 0);
         object.put("msg", "ok");
-        if(data==null){
+        if (data == null) {
             object.put("data", new ArrayList<>());
             object.put("count", 0);
-        }else{
+        } else {
             object.put("data", data);
             object.put("count", data.size());
         }

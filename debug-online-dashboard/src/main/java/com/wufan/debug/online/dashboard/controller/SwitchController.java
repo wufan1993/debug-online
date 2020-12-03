@@ -1,9 +1,9 @@
 package com.wufan.debug.online.dashboard.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.socket.server.AgentClientServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,14 +13,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2019-11-01
- * Time:10:33
- * Description:ExecShController.java
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:12
+ * Description:SwitchController.java
  *
- * @author wufan wufan02@imdada.cn
+ * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2019 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @Controller
 @RequestMapping("/switch")
@@ -30,16 +30,16 @@ public class SwitchController {
 
     @GetMapping("/setMonitorMethod")
     @ResponseBody
-    public String setMonitorMethod(String username, boolean status,String typeName,String method) {
-        String typeMethod=typeName+"#"+method;
+    public String setMonitorMethod(String username, boolean status, String typeName, String method) {
+        String typeMethod = typeName + "#" + method;
         if (status) {
             //开启
             log.info("当前连接以建立AGENT_CLIENT" + username);
-            WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMonitor=>"+typeMethod);
+            WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMonitor=>" + typeMethod);
             AgentClientServerEndpoint.userMethodMap.get(username).add(typeMethod);
         } else {
             //给远程端口发送开启发送命令
-            WebSocketSession.AGENT_REMOTE.sendText(username, "removeAgentMonitor=>"+typeMethod);
+            WebSocketSession.AGENT_REMOTE.sendText(username, "removeAgentMonitor=>" + typeMethod);
             AgentClientServerEndpoint.userMethodMap.get(username).remove(typeMethod);
         }
         return "成功";
@@ -88,12 +88,12 @@ public class SwitchController {
     public String sentMainMethod(String username, String value) {
 
         String[] split = value.split("\n");
-        if(split.length>0){
+        if (split.length > 0) {
             WebSocketSession.AGENT_REMOTE.sendText(username, "removeAllMethod");
-            Arrays.stream(split).forEach(method->{
-                if(method.contains("#")){
+            Arrays.stream(split).forEach(method -> {
+                if (method.contains("#")) {
                     //把它发送给监控端
-                    WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMethod=>"+method);
+                    WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMethod=>" + method);
                 }
             });
         }

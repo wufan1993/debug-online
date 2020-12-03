@@ -5,12 +5,12 @@ import com.carrotsearch.sizeof.RamUsageEstimator;
 /**
  * 我本非凡
  * Date:2020-12-03
- * Time:11:12:04
+ * Time:13:12:01
  * Description:ObjectSizeFetcher.java
  *
  * @author wufan02
  * @since JDK 1.8
- * 欲穷千里目 更上一层楼
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class ObjectSizeFetcher {
 

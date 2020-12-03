@@ -7,14 +7,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2019-06-27
- * Time:17:13
- * Description:启动服务类
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:54
+ * Description:O2oAgentDashboardApplication.java
  *
- * @author wufan wufan02@imdada.cn
+ * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2019 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @SpringBootApplication(exclude = {BeetlSqlSingleConfig.class})
 @ComponentScan("com.wufan.debug.online.dashboard")

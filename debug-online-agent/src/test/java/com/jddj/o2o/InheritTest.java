@@ -24,39 +24,10 @@ import java.util.List;
 public class InheritTest {
 
     public static void main(String[] args) {
-        InheritTest test=new InheritTest();
-        for(int i=0;i<100;i++){
+        InheritTest test = new InheritTest();
+        for (int i = 0; i < 100; i++) {
             test.testExe1(i);
         }
-    }
-
-    private  void testExe4(int i) {
-        System.out.println(i);
-    }
-
-    private  void testExe3(int i) {
-        System.out.println(i);
-        if(i==2){
-            throw new RuntimeException("抛出异常");
-        }
-
-    }
-
-    private  void testExe2(int i) {
-        System.out.println(i);
-
-    }
-
-    private  void testExe1(int i) {
-        System.out.println(i);
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        testExe2(i);
-        testExe3(i);
-        testExe4(i);
     }
 
     private static void testThreadProcess(int index) {
@@ -115,6 +86,34 @@ public class InheritTest {
         }
     }
 
+    private void testExe4(int i) {
+        System.out.println(i);
+    }
+
+    private void testExe3(int i) {
+        System.out.println(i);
+        if (i == 2) {
+            throw new RuntimeException("抛出异常");
+        }
+
+    }
+
+    private void testExe2(int i) {
+        System.out.println(i);
+
+    }
+
+    private void testExe1(int i) {
+        System.out.println(i);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        testExe2(i);
+        testExe3(i);
+        testExe4(i);
+    }
 
     public void test(TestObject testObject) {
         //LinkAdvice.enter("testType1", "testMethod1", null);

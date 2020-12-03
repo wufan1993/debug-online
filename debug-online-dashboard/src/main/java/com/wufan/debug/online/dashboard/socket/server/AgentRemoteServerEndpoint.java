@@ -1,9 +1,9 @@
 package com.wufan.debug.online.dashboard.socket.server;
 
-import lombok.extern.slf4j.Slf4j;
 import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.util.JsonUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -19,16 +19,14 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2019-10-31
- * Time:14:58
- * Description:
- * * 狼窝服务端
- * * 标注为端点：@ServerEndpoint，其中"/chat-room/{username}"为访问路径
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:13
+ * Description:AgentRemoteServerEndpoint.java
  *
- * @author wufan wufan02@imdada.cn
+ * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2019 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @Component
 @ServerEndpoint("/socket/agentRemote/{username}")
@@ -50,10 +48,10 @@ public class AgentRemoteServerEndpoint {
         //sendTextAll("欢迎用户【" + username + "】来到狼窝！");
         //如果服务器上存在方法列表，那么把方法列表更新到机器中
 
-        Optional.ofNullable(AgentClientServerEndpoint.userMethodMap.get(username)).ifPresent(userMethod->{
-            userMethod.forEach(method->{
+        Optional.ofNullable(AgentClientServerEndpoint.userMethodMap.get(username)).ifPresent(userMethod -> {
+            userMethod.forEach(method -> {
                 log.info("当前连接以建立重启恢复加载method" + username);
-                WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMonitor=>"+method);
+                WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMonitor=>" + method);
                 AgentClientServerEndpoint.userMethodMap.get(username).add(method);
             });
         });

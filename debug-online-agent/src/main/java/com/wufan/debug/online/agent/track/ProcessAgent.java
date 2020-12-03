@@ -5,12 +5,12 @@ import java.time.LocalTime;
 /**
  * 我本非凡
  * Date:2020-12-03
- * Time:11:12:16
+ * Time:13:12:32
  * Description:ProcessAgent.java
  *
  * @author wufan02
  * @since JDK 1.8
- * 欲穷千里目 更上一层楼
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class ProcessAgent {
 
@@ -28,7 +28,7 @@ public class ProcessAgent {
     private Object res;
     private Long costTime;
     //异常
-    private String message="";
+    private String message = "";
 
     //时间参数
     private String enterTime;

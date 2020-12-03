@@ -16,7 +16,8 @@
 <!-- 操作列 -->
 <script type="text/html" id="oper-col">
     {{ (d.debugPort == true || d.id == 0) ? '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="checkParam">入参</a>' : '' }}
-    {{ (d.debugPort == true || d.id == 0) ? '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="checkRes">出参</a>' : '' }}
+    {{ (d.debugPort == true || d.id == 0) ? '<a class="layui-btn layui-btn-danger layui-btn-xs"
+                                                lay-event="checkRes">出参</a>' : '' }}
 </script>
 
 
@@ -47,14 +48,14 @@
                     url: '/agent/getAgentData?username=${username}&rootId=${rootId}',
                     toolbar: '#toolbarDemo',
                     page: false,
-                    done:function(result,currPage,count){//数据回调方法
+                    done: function (result, currPage, count) {//数据回调方法
                         var data = result.data;
-                        data.forEach(function(value, key) {
+                        data.forEach(function (value, key) {
                             //这里必须选择点击方法，不知为何添加layui-form-checked class属性会造成二次点击（即下次点击必须点击两下才能生效）bug，
                             //所有类似的手动修改class貌似都会造成二次效果
                             //console.log(value);
-                            if(value.debugPort){
-                                var index= value['LAY_TABLE_INDEX'];
+                            if (value.debugPort) {
+                                var index = value['LAY_TABLE_INDEX'];
                                 $('tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
                                 $('tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
                                 //$("div[lay-id='topicList'] td .layui-form-checkbox").eq(key).click();
@@ -64,16 +65,16 @@
                         layer.closeAll('loading');
                     },
                     cols: [[
-                        {type:'checkbox'},
+                        {type: 'checkbox'},
                         /*{type: 'numbers'},*/
-                        {field: 'id', title: 'id',width:'10%'},
-                        {field:"debugPort",templet: '#oper-col', title: 'oper',width:'14%'},
+                        {field: 'id', title: 'id', width: '10%'},
+                        {field: "debugPort", templet: '#oper-col', title: 'oper', width: '14%'},
                         /*{field: 'pid', title: 'pid'},*/
-                        {field: 'typeName', title: '类名称',width:'44%'},
-                        {field: 'method', title: '具体方法',width:'22%'},
+                        {field: 'typeName', title: '类名称', width: '44%'},
+                        {field: 'method', title: '具体方法', width: '22%'},
                         /*{field: 'args', title: '入参'},
                         {field: 'res', title: '出参'},*/
-                        {field: 'message', title: '异常信息',width:'10%'}
+                        {field: 'message', title: '异常信息', width: '10%'}
                     ]],
                     id: 'topicList'
                 });
@@ -108,21 +109,21 @@
             });
 
             //头工具栏事件
-            table.on('checkbox(table1)', function(obj){
+            table.on('checkbox(table1)', function (obj) {
                 console.log(obj);
                 //设置方法断点成功
-                var lineData=obj.data;
-                var checked=obj.checked;
-                var typeMethod=(lineData.typeName+"#"+lineData.method);
+                var lineData = obj.data;
+                var checked = obj.checked;
+                var typeMethod = (lineData.typeName + "#" + lineData.method);
                 $.ajax({
-                    url: "/switch/setMonitorMethod?username=${username}&status=" + checked+"&typeName="+lineData.typeName+"&method="+lineData.method,	//请求url
+                    url: "/switch/setMonitorMethod?username=${username}&status=" + checked + "&typeName=" + lineData.typeName + "&method=" + lineData.method,	//请求url
                     type: "GET",	//请求类型  post|get
                     dataType: "text",  //返回数据的 类型 text|json|html--
                     success: function (data) {	//回调函数 和 后台返回的 数据
-                        if(checked){
-                            layer.msg("设置方法监控点"+typeMethod+data);
-                        }else{
-                            layer.msg("取消方法监控点"+typeMethod+data);
+                        if (checked) {
+                            layer.msg("设置方法监控点" + typeMethod + data);
+                        } else {
+                            layer.msg("取消方法监控点" + typeMethod + data);
                         }
                     },
                     error: function (data) {

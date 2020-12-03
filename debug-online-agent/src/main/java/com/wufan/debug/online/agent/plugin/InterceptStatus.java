@@ -5,6 +5,7 @@ import com.wufan.debug.online.agent.utils.LogTrack;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * 我本非凡
  * Date:2020-12-03
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author wufan02
  * @since JDK 1.8
- * 欲穷千里目 更上一层楼
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class InterceptStatus {
 
@@ -77,7 +78,7 @@ public class InterceptStatus {
      * 去除参数方法
      */
     public static void cancelMethodParamList(String typeMethod) {
-        LogTrack.appendLog("取消监控参数方法\t"+typeMethod);
+        LogTrack.appendLog("取消监控参数方法\t" + typeMethod);
         methodParamList.remove(typeMethod);
     }
 

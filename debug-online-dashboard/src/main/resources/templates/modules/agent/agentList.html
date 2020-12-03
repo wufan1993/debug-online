@@ -57,10 +57,10 @@
                     {type: 'numbers'},
                     /*{field: 'pid', title: 'pid'},*/
                     /*{field: 'id', title: 'id'},*/
-                    {field: 'enterName', title: '进入时间',width:'12%'},
-                    {field: 'methodName', title: '方法名',width:'23%'},
-                    {field: 'typeName', title: '类名',width:'50%'},
-                    {templet: '#oper-col', title: 'oper',width:'15%'}
+                    {field: 'enterName', title: '进入时间', width: '12%'},
+                    {field: 'methodName', title: '方法名', width: '23%'},
+                    {field: 'typeName', title: '类名', width: '50%'},
+                    {templet: '#oper-col', title: 'oper', width: '15%'}
                 ]],
                 done: function () {
                     layer.closeAll('loading');
@@ -104,19 +104,19 @@
 
         //定义一个自动刷新表格
         var ws;
-        var username='${username}';
+        var username = '${username}';
         if (ws == null || ws == undefined) {
             //ws = new WebSocket("ws://preagent.jddj.com/socket/agentClient/" + username);
             ws = new WebSocket("ws://${agentHost}/socket/agentClient/" + username);
 
             ws.onopen = function (evt) {  //绑定连接事件
-                console.log("Connection open ..."+username);
+                console.log("Connection open ..." + username);
                 //js.alertSuccess("当前连接建立成功! ==>>>" + username)
                 //ws.send("发送的数据");
                 switchMonitor(true);
             };
             ws.onclose = function (evt) { //绑定关闭或断开连接事件
-                console.log("Connection closed."+username);
+                console.log("Connection closed." + username);
                 switchMonitor(false);
                 //js.alertSuccess("当前连接以成功关闭!! ==>>>" + username);
                 ws = null;

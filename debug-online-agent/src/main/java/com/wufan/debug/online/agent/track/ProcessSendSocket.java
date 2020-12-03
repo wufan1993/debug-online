@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.java_websocket.client.WebSocketClient;
 import com.wufan.debug.online.agent.utils.LogTrack;
+import org.java_websocket.client.WebSocketClient;
 
 /**
  * 我本非凡
@@ -15,7 +15,7 @@ import com.wufan.debug.online.agent.utils.LogTrack;
  *
  * @author wufan02
  * @since JDK 1.8
- * 欲穷千里目 更上一层楼
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class ProcessSendSocket {
 

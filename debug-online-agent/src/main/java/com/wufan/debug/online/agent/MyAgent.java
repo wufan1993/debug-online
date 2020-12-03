@@ -1,5 +1,8 @@
 package com.wufan.debug.online.agent;
 
+import com.wufan.debug.online.agent.plugin.MethodIntercept;
+import com.wufan.debug.online.agent.socket.ShExecuteClient;
+import com.wufan.debug.online.agent.utils.LogTrack;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.method.MethodList;
@@ -8,21 +11,18 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
-import com.wufan.debug.online.agent.plugin.MethodIntercept;
-import com.wufan.debug.online.agent.socket.ShExecuteClient;
-import com.wufan.debug.online.agent.utils.LogTrack;
 
 import java.lang.instrument.Instrumentation;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2020-11-23
- * Time:15:11:31
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:33
  * Description:MyAgent.java
  *
  * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2020 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class MyAgent {
 
@@ -109,7 +109,7 @@ public class MyAgent {
 
             @Override
             public void onError(String s, ClassLoader classLoader, JavaModule javaModule, boolean b, Throwable throwable) {
-                System.out.println("net.bytebuddy.agent.builder.AgentBuilder.Listener.onError:" + s+"异常:"+throwable.getMessage());
+                System.out.println("net.bytebuddy.agent.builder.AgentBuilder.Listener.onError:" + s + "异常:" + throwable.getMessage());
             }
 
             @Override

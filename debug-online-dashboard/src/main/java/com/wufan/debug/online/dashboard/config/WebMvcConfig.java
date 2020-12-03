@@ -14,14 +14,14 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2019-08-12
- * Time:11:22
- * Description:配置静态资源映射
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:40
+ * Description:WebMvcConfig.java
  *
- * @author wufan wufan02@imdada.cn
+ * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2019 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @Configuration
 @Slf4j

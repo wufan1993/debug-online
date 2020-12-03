@@ -5,14 +5,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2020-11-05
- * Time:14:11:12
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:18
  * Description:TrackContext.java
  *
  * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2020 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class TrackContext {
 
@@ -21,11 +21,8 @@ public class TrackContext {
     private static final ThreadLocal<Integer> trackParent = new ThreadLocal<>();
 
     private static final InheritableThreadLocal<Integer> trackExtend = new InheritableThreadLocal<>();
-
-    private static Map<String, Map<String, AtomicLong>> methodTrack = new HashMap<>();
-
     private static final ThreadLocal<Map<String, Object>> preTypeMethodData = new ThreadLocal<>();
-
+    private static Map<String, Map<String, AtomicLong>> methodTrack = new HashMap<>();
 
     /**
      * 0 代表不记录 1代表通过 2代表超过拒绝

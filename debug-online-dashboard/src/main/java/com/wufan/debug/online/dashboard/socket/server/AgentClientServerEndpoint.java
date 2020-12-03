@@ -1,7 +1,7 @@
 package com.wufan.debug.online.dashboard.socket.server;
 
-import lombok.extern.slf4j.Slf4j;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -16,23 +16,21 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2019-10-31
- * Time:14:58
- * Description:
- * * 狼窝服务端
- * * 标注为端点：@ServerEndpoint，其中"/chat-room/{username}"为访问路径
+ * 我本非凡
+ * Date:2020-12-03
+ * Time:13:12:13
+ * Description:AgentClientServerEndpoint.java
  *
- * @author wufan wufan02@imdada.cn
+ * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2019 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @Component
 @ServerEndpoint("/socket/agentClient/{username}")
 @Slf4j
 public class AgentClientServerEndpoint {
 
-    public static Map<String,List<String>> userMethodMap=new ConcurrentHashMap<>();
+    public static Map<String, List<String>> userMethodMap = new ConcurrentHashMap<>();
 
     /**
      * 前端一旦启用WebSocket,机会调用@OnOpen注解标注的方法
@@ -46,7 +44,7 @@ public class AgentClientServerEndpoint {
         //添加前段session 后缀是client
         WebSocketSession.AGENT_CLIENT.putSession(username, session);
         log.info("当前连接以建立AGENT_CLIENT" + username);
-        userMethodMap.put(username,new ArrayList<>());
+        userMethodMap.put(username, new ArrayList<>());
         //sendTextAll("欢迎用户【" + username + "】来到狼窝！");
     }
 
