@@ -1,0 +1,137 @@
+<% layout('/layouts/index.html', {title: '调用详细堆栈', libs: []}){ %>
+<!-- ============================================================== -->
+
+<div class="layui-btn-group">
+    <button class="layui-btn" id="btn-expand">全部展开</button>
+    <button class="layui-btn" id="btn-fold">全部折叠</button>
+    <button class="layui-btn" id="btn-refresh">刷新表格</button>
+</div>
+&nbsp;
+<div id="topicList">
+    <table id="table1" class="layui-table" lay-filter="table1"></table>
+</div>
+
+
+<% } %>
+<!-- 操作列 -->
+<script type="text/html" id="oper-col">
+    {{ (d.debugPort == true || d.id == 0) ? '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="checkParam">入参</a>' : '' }}
+    {{ (d.debugPort == true || d.id == 0) ? '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="checkRes">出参</a>' : '' }}
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        layui.config({
+            base: '/static/plugins/dynamic-tree/module/'
+        }).extend({
+            treetable: 'treetable-lay/treetable'
+        }).use(['layer', 'table', 'treetable'], function () {
+            var $ = layui.jquery;
+            var table = layui.table;
+            var layer = layui.layer;
+            var treetable = layui.treetable;
+
+            // 渲染表格
+            var renderTable = function () {
+                layer.load(2);
+                treetable.render({
+                    treeColIndex: 1,
+                    treeSpid: -1,
+                    treeIdName: 'id',
+                    treePidName: 'pid',
+                    treeDefaultClose: true,
+                    treeLinkage: false,
+                    elem: '#table1',
+                    url: '/agent/getAgentData?username=${username}&rootId=${rootId}',
+                    toolbar: '#toolbarDemo',
+                    page: false,
+                    done:function(result,currPage,count){//数据回调方法
+                        var data = result.data;
+                        data.forEach(function(value, key) {
+                            //这里必须选择点击方法，不知为何添加layui-form-checked class属性会造成二次点击（即下次点击必须点击两下才能生效）bug，
+                            //所有类似的手动修改class貌似都会造成二次效果
+                            //console.log(value);
+                            if(value.debugPort){
+                                var index= value['LAY_TABLE_INDEX'];
+                                $('tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                                $('tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                                //$("div[lay-id='topicList'] td .layui-form-checkbox").eq(key).click();
+
+                            }
+                        })
+                        layer.closeAll('loading');
+                    },
+                    cols: [[
+                        {type:'checkbox'},
+                        /*{type: 'numbers'},*/
+                        {field: 'id', title: 'id',width:'10%'},
+                        {field:"debugPort",templet: '#oper-col', title: 'oper',width:'14%'},
+                        /*{field: 'pid', title: 'pid'},*/
+                        {field: 'typeName', title: '类名称',width:'44%'},
+                        {field: 'method', title: '具体方法',width:'22%'},
+                        /*{field: 'args', title: '入参'},
+                        {field: 'res', title: '出参'},*/
+                        {field: 'message', title: '异常信息',width:'10%'}
+                    ]],
+                    id: 'topicList'
+                });
+            };
+
+            renderTable();
+
+            $('#btn-expand').click(function () {
+                treetable.expandAll('#table1');
+            });
+
+            $('#btn-fold').click(function () {
+                treetable.foldAll('#table1');
+            });
+
+            $('#btn-refresh').click(function () {
+                renderTable();
+            });
+
+            //监听工具条
+            table.on('tool(table1)', function (obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+
+                if (layEvent === 'checkParam') {
+                    //layer.msg(JSON.stringify(data.args));
+                    console.log(data.args);
+                } else if (layEvent === 'checkRes') {
+                    console.log(data.res);
+                    //layer.msg(JSON.stringify(data.res));
+                }
+            });
+
+            //头工具栏事件
+            table.on('checkbox(table1)', function(obj){
+                console.log(obj);
+                //设置方法断点成功
+                var lineData=obj.data;
+                var checked=obj.checked;
+                var typeMethod=(lineData.typeName+"#"+lineData.method);
+                $.ajax({
+                    url: "/switch/setMonitorMethod?username=${username}&status=" + checked+"&typeName="+lineData.typeName+"&method="+lineData.method,	//请求url
+                    type: "GET",	//请求类型  post|get
+                    dataType: "text",  //返回数据的 类型 text|json|html--
+                    success: function (data) {	//回调函数 和 后台返回的 数据
+                        if(checked){
+                            layer.msg("设置方法监控点"+typeMethod+data);
+                        }else{
+                            layer.msg("取消方法监控点"+typeMethod+data);
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg(data);
+                    }
+                });
+            });
+        });
+
+    });
+
+</script>

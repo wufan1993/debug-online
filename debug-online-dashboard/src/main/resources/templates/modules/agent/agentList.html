@@ -1,0 +1,158 @@
+<% layout('/layouts/index.html', {title: '监控方法列表', libs: []}){ %>
+<!-- ============================================================== -->
+
+<div class="layui-btn-group">
+    <a class="layui-btn layui-btn-normal" id="btn-switchMonitorOn">开启拦截</a>
+    <a class="layui-btn layui-btn-normal" id="btn-switchMonitorOff">关闭拦截</a>
+    <a class="layui-btn layui-btn-normal" id="btn-clearMonitor">清空数据</a>
+</div>
+&nbsp;
+<!--<div class="layui-btn-group">
+    <button class="layui-btn" id="btn-refresh">刷新表格</button>
+</div>-->
+<table id="table1" class="layui-table" lay-filter="table1"></table>
+
+<% } %>
+
+<!-- 操作列 -->
+<script type="text/html" id="oper-col">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="checkParam">入参</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="checkInfo">详细</a>
+</script>
+
+<script>
+
+    /*$(window).bind("beforeunload", function() {
+        //响应事件
+        switchMonitor(false);
+        clearMonitor();
+    });*/
+
+    var layer;
+
+    layui.config({
+        base: '/static/plugins/dynamic-tree/module/'
+    }).extend({
+        treetable: 'treetable-lay/treetable'
+    }).use(['layer', 'table', 'treetable'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        layer = layui.layer;
+        var treetable = layui.treetable;
+
+        // 渲染表格
+        var renderTable = function () {
+            layer.load(2);
+            treetable.render({
+                treeColIndex: 1,
+                treeSpid: -1,
+                treeIdName: 'id',
+                treePidName: 'pid',
+                treeDefaultClose: true,
+                treeLinkage: false,
+                elem: '#table1',
+                url: '/agent/getAgentList?username=${username}',
+                page: false,
+                cols: [[
+                    {type: 'numbers'},
+                    /*{field: 'pid', title: 'pid'},*/
+                    /*{field: 'id', title: 'id'},*/
+                    {field: 'enterName', title: '进入时间',width:'12%'},
+                    {field: 'methodName', title: '方法名',width:'23%'},
+                    {field: 'typeName', title: '类名',width:'50%'},
+                    {templet: '#oper-col', title: 'oper',width:'15%'}
+                ]],
+                done: function () {
+                    layer.closeAll('loading');
+                }
+            });
+        };
+
+        renderTable();
+
+        /*$('#btn-refresh').click(function () {
+            renderTable();
+        });*/
+
+        $('#btn-switchMonitorOn').click(function () {
+            switchMonitor(true);
+        });
+
+        $('#btn-switchMonitorOff').click(function () {
+            switchMonitor(false);
+            //renderTable();
+        });
+
+        $('#btn-clearMonitor').click(function () {
+            clearMonitor();
+            renderTable();
+        });
+
+        //监听工具条
+        table.on('tool(table1)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+
+            if (layEvent === 'checkParam') {
+                //layer.msg('入参' + JSON.stringify(data.args));
+                console.log(data.args);
+            } else if (layEvent === 'checkInfo') {
+                //layer.msg('跳转' + data.id);
+                window.open("/agent/listAgentDetail?username=${username}&rootId=" + data.rootId);
+            }
+        });
+
+        //定义一个自动刷新表格
+        var ws;
+        var username='${username}';
+        if (ws == null || ws == undefined) {
+            //ws = new WebSocket("ws://preagent.jddj.com/socket/agentClient/" + username);
+            ws = new WebSocket("ws://${agentHost}/socket/agentClient/" + username);
+
+            ws.onopen = function (evt) {  //绑定连接事件
+                console.log("Connection open ..."+username);
+                //js.alertSuccess("当前连接建立成功! ==>>>" + username)
+                //ws.send("发送的数据");
+                switchMonitor(true);
+            };
+            ws.onclose = function (evt) { //绑定关闭或断开连接事件
+                console.log("Connection closed."+username);
+                switchMonitor(false);
+                //js.alertSuccess("当前连接以成功关闭!! ==>>>" + username);
+                ws = null;
+            };
+            ws.onmessage = function (evt) {//绑定收到消息事件
+                //console.log("Received Message: " + evt.data);
+                renderTable();
+            };
+        }
+    });
+
+    function switchMonitor(b) {
+        $.ajax({
+            url: "/switch/switchMonitor?username=${username}&status=" + b,	//请求url
+            type: "GET",	//请求类型  post|get
+            dataType: "text",  //返回数据的 类型 text|json|html--
+            success: function (data) {	//回调函数 和 后台返回的 数据
+                layer.msg(data);
+            },
+            error: function (data) {
+                layer.msg(data);
+            }
+        });
+    }
+
+    function clearMonitor() {
+        $.ajax({
+            url: "/switch/clearMonitor?username=${username}",	//请求url
+            type: "GET",	//请求类型  post|get
+            dataType: "text",  //返回数据的 类型 text|json|html--
+            success: function (data) {	//回调函数 和 后台返回的 数据
+                layer.msg(data);
+            },
+            error: function (data) {
+                layer.msg(data);
+            }
+        });
+    }
+</script>

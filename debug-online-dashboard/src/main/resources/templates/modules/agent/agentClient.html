@@ -1,0 +1,99 @@
+<% layout('/layouts/index.html', {title: '客户端列表', libs: []}){ %>
+<!-- ============================================================== -->
+
+<div class="layui-btn-group">
+    <button class="layui-btn" id="btn-refresh">刷新表格</button>
+</div>
+
+<table id="table1" class="layui-table" lay-filter="table1"></table>
+
+<% } %>
+
+<!-- 操作列 -->
+<script type="text/html" id="oper-col">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">设置主方法</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">进入调试</a>
+</script>
+
+<script>
+    layui.config({
+        base: '/static/plugins/dynamic-tree/module/'
+    }).extend({
+        treetable: 'treetable-lay/treetable'
+    }).use(['layer', 'table', 'treetable'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var layer = layui.layer;
+        var treetable = layui.treetable;
+
+        // 渲染表格
+        var renderTable = function () {
+            layer.load(2);
+            treetable.render({
+                treeColIndex: 1,
+                treeSpid: -1,
+                treeIdName: 'id',
+                treePidName: 'pid',
+                treeDefaultClose: true,
+                treeLinkage: false,
+                elem: '#table1',
+                url: '/agent/getAgentClient',
+                page: false,
+                cols: [[
+                    {type: 'numbers'},
+                    /*{field: 'pid', title: 'pid'},*/
+                    {field: 'id', title: 'id'},
+                    {field: 'username', title: 'IP'},
+                    {templet: '#oper-col', title: 'oper'}
+                ]],
+                done: function () {
+                    layer.closeAll('loading');
+                }
+            });
+        };
+
+        renderTable();
+
+        $('#btn-refresh').click(function () {
+            renderTable();
+        });
+
+        //监听工具条
+        table.on('tool(table1)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+
+            if (layEvent === 'enterDebug') {
+                //layer.msg('跳转' + data.id);
+                //判断当前是否存在会话 如果存在 那不允许打开
+                window.open("/agent/listAgentList?username="+data.username);
+            }
+            if (layEvent === 'setupMethod') {
+                //layer.msg('跳转' + data.id);
+                layer.prompt({
+                    formType: 2
+                    ,title: '覆盖   ['+ data.username +'] 的method入口集合'
+                    ,value: ""
+                }, function(value, index){
+                    //这里一般是发送修改的Ajax请求
+
+                    //把方法放到监控里面去
+                    $.ajax({
+                        url: "/switch/sentMainMethod",	//请求url
+                        type: "GET",	//请求类型  post|get
+                        data:{"value":value,"username":data.username},
+                        dataType: "text",  //返回数据的 类型 text|json|html--
+                        success: function (data) {	//回调函数 和 后台返回的 数据
+                            layer.close(index);
+                            layer.msg(data);
+                        },
+                        error: function (data) {
+                            layer.msg(data);
+                        }
+                    });
+
+                });
+            }
+        });
+    });
+</script>
