@@ -1,4 +1,4 @@
-package com.jddj.o2o;
+package com.wufan.test;
 
 import java.util.List;
 

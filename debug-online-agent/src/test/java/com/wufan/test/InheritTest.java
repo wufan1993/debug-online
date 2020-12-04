@@ -1,4 +1,4 @@
-package com.jddj.o2o;
+package com.wufan.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +71,8 @@ public class InheritTest {
                 objectList.add(testObject);
                 objectSize.setTestObjectList(objectList);
 
-                int mb = ObjectSizeFetcher.getMb(objectSize);
-                System.out.println("输出大小" + mb);
+                //int mb = ObjectSizeFetcher.getMb(objectSize);
+                //System.out.println("输出大小" + mb);
 
             }).start();
             inheritTest.test3("小黑", index);
