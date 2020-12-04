@@ -1,8 +1,4 @@
-DELETE FROM liquor;
+DELETE FROM machine;
 
-INSERT INTO liquor (id, name, price) VALUES
-  (1, '老白干', 13),
-  (2, '泸州老窖', 127),
-  (3, '酒鬼', 74),
-  (4, '茅台', 1687),
-  (5, '五粮液', 222);
+INSERT INTO machine (ip, name,desc) VALUES
+  ('192.168.80.65', 'debug-online-dashboard', '本地测试机器');

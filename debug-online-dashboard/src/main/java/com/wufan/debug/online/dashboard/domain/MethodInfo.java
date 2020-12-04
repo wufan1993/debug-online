@@ -15,7 +15,9 @@ import lombok.Data;
 @Data
 public class MethodInfo {
 
-
+    /**
+     * 表格使用 默认为 -1
+     */
     private int pid;
 
     private int id;
@@ -37,7 +39,11 @@ public class MethodInfo {
      * 接入类型 主方法 1
      * 接入类型 子方法 2
      */
-    private String type;
+    private String status;
 
+    /**
+     * 排序字段
+     */
+    private int rank;
 
 }

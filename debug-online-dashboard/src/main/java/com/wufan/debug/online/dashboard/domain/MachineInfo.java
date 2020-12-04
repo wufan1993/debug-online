@@ -29,6 +29,7 @@ public class MachineInfo {
      */
     private String desc;
 
+    //============机器返回信息=============
     /**
      * 机器状态 0表示丢失 1表示在线
      */
@@ -42,4 +43,12 @@ public class MachineInfo {
      * 丢失时间
      */
     private String lostTime;
+
+
+
+    //============获取机器信息=============
+    /**
+     * 正则切入控制
+     */
+    private String regexp;
 }

@@ -1,0 +1,84 @@
+<% layout('/layouts/index.html', {title: '客户端列表', libs: []}){ %>
+<!-- ============================================================== -->
+
+<form class="layui-form" action="" lay-filter="machineInfoForm">
+    <div class="layui-form-item">
+        <label class="layui-form-label">IP</label>
+        <div class="layui-input-block">
+            <input type="text" name="ip" lay-verify="title" autocomplete="off" placeholder="请输入IP" class="layui-input">
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">应用编号</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入应用编号" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述信息</label>
+        <div class="layui-input-block">
+            <input type="text" name="desc" lay-verify="title" autocomplete="off" placeholder="请输入其它描述相关信息" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">匹配正则</label>
+        <div class="layui-input-block">
+            <input type="text" name="regexp" lay-verify="title" autocomplete="off" placeholder="请输入项目匹配正则路径" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <!--<button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-setval">赋值</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>-->
+            <button type="submit" hidden id="LAY-component-form-submit">立即提交</button>
+        </div>
+    </div>
+
+</form>
+
+<% } %>
+
+<!-- 操作列 -->
+<script type="text/html" id="oper-col">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">设置主方法</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">进入调试</a>
+</script>
+
+<script>
+
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit;
+
+        //监听提交
+        form.on('submit(submitMachineInfo)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+
+                title: '最终的提交信息'
+            });
+            return false;
+        });
+
+        //表单赋值
+        layui.$('#LAY-component-form-setval').on('click', function(){
+            form.val('machineInfoForm', {
+                "username": "贤心" // "name": "value"
+                ,"desc": "我爱 layui"
+            });
+        });
+
+        //表单取值
+        layui.$('#LAY-component-form-getval').on('click', function(){
+            var data = form.val('machineInfoForm');
+            alert(JSON.stringify(data));
+        });
+    });
+
+    function submitMachineInfo(){
+        alert("子方法调用");
+        $('#LAY-component-form-submit').click();
+    }
+</script>

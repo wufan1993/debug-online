@@ -3,9 +3,10 @@
 
 <div class="layui-btn-group">
     <button class="layui-btn" id="btn-refresh">刷新表格</button>
+    <button class="layui-btn layui-btn-normal" id="btn-add"  data-type="auto">添加机器配置</button>
 </div>
 
-<table id="table1" class="layui-table" lay-filter="table1"></table>
+<table id="table1" class="layui-table" lay-filter="table1" ></table>
 
 <% } %>
 
@@ -56,6 +57,41 @@
 
         $('#btn-refresh').click(function () {
             renderTable();
+        });
+
+        $('#btn-add').click(function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                ,title: '机器信息操作'
+                ,area: ['590px', '460px']
+                ,shade: 0
+                ,maxmin: true
+                /*,offset: [ //为了演示，随机坐标
+                    Math.random()*($(window).height()-300)
+                    ,Math.random()*($(window).width()-390)
+                ]*/
+                ,content: '/info/machineInfo'
+                //,content: '//127.0.0.1:8080/info/machineInfo'
+                ,btn: ['提交', '关闭'] //只是为了演示
+                ,yes: function(index,layero){
+                    //保存表单数据
+                    //获取iframe的body元素
+                    var body = layer.getChildFrame('body',index);
+                    //得到iframe页的窗口对象
+                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                    //执行iframe页的showMsg方法
+                    iframeWin.submitMachineInfo();
+
+
+                }
+                ,btn2: function(){
+                    layer.closeAll();
+                }
+                ,zIndex: layer.zIndex //重点1
+                ,success: function(layero){
+                    layer.setTop(layero); //重点2
+                }
+            });
         });
 
         //监听工具条
