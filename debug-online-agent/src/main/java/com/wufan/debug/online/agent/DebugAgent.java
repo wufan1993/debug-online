@@ -18,13 +18,13 @@ import java.lang.instrument.Instrumentation;
  * 我本非凡
  * Date:2020-12-03
  * Time:13:12:33
- * Description:MyAgent.java
+ * Description:DebugAgent.java
  *
  * @author wufan02
  * @since JDK 1.8
  * Enjoy a grander sight By climbing to a greater height
  */
-public class MyAgent {
+public class DebugAgent {
 
     public static String remoteHost = "preagent.jddj.com";
 
@@ -61,13 +61,7 @@ public class MyAgent {
         }).start();
 
         LogTrack.appendLog("this is my agent：" + regexp);
-
-        //com.jd.o2o.search.tools.(service|web).*
-        //-javaagent:/export/data/agentjddj.jar='com.jd.o2o.web.product.(web.controller|rpc|service).*'
-        //-javaagent:/export/data/agentjddj.jar='com.jd.o2o.search.index.(dao|service|web.mq).*'
-        //-javaagent:/export/data/agentjddj.jar='com.jd.o2o.search.center.(client.service|service).*'
-        //-javaagent:/export/data/agentjddj.jar='com.jd.o2o.search.center.service.(saf|brand|category|intent|qc|search|skuattr|sort|store).*'
-
+        
         //抽象类不拦截 静态方法不拦截
         String packagePrefix = regexp;
 

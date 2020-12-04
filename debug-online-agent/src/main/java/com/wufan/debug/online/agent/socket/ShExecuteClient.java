@@ -1,6 +1,6 @@
 package com.wufan.debug.online.agent.socket;
 
-import com.wufan.debug.online.agent.MyAgent;
+import com.wufan.debug.online.agent.DebugAgent;
 import com.wufan.debug.online.agent.plugin.InterceptStatus;
 import com.wufan.debug.online.agent.track.ProcessSendSocket;
 import com.wufan.debug.online.agent.track.TrackContext;
@@ -45,7 +45,7 @@ public class ShExecuteClient {
                 String ip = addr.getHostAddress(); //获取本机ip
 
                 // 此处的WebSocket服务端URI，上面服务端第2点有详细说明
-                String url = String.format(WS_URI, MyAgent.remoteHost, ip);
+                String url = String.format(WS_URI, DebugAgent.remoteHost, ip);
                 if (!switchStatus.get()) {
                     WebSocketClient client = ProcessSendSocket.getClient();
                     if (client == null || !client.isOpen()) {
