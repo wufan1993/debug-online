@@ -1,0 +1,251 @@
+<% layout('/layouts/index.html', {title: '主方法列表', libs: []}){ %>
+<!-- ============================================================== -->
+
+<div class="layui-btn-group">
+    <button class="layui-btn" id="btn-expand">全部展开</button>
+    <button class="layui-btn" id="btn-fold">全部折叠</button>
+    <button class="layui-btn" id="btn-refresh">刷新表格</button>
+
+    <button class="layui-btn layui-btn-normal" id="btn-add"  data-type="auto">添加主方法</button>
+</div>
+&nbsp;
+<div id="topicList">
+    <table id="table1" class="layui-table" lay-filter="table1"></table>
+</div>
+
+<% } %>
+<!-- 操作列 -->
+<script type="text/html" id="oper-col">
+    {{ (d.status == 0) ? '
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="btn-add-child">添加子方法</a>
+    ' : '' }}
+
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="btn-update">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="btn-delete">删除</a>
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        layui.config({
+            base: '/static/plugins/dynamic-tree/module/'
+        }).extend({
+            treetable: 'treetable-lay/treetable'
+        }).use(['layer', 'table', 'treetable'], function () {
+            var $ = layui.jquery;
+            var table = layui.table;
+            var layer = layui.layer;
+            var treetable = layui.treetable;
+
+            // 渲染表格
+            var renderTable = function () {
+                layer.load(2);
+                treetable.render({
+                    treeColIndex: 1,
+                    treeSpid: -1,
+                    treeIdName: 'id',
+                    treePidName: 'pid',
+                    treeDefaultClose: true,
+                    treeLinkage: false,
+                    elem: '#table1',
+                    url: '/method/listMethod?ip=${ip}',
+                    toolbar: '#toolbarDemo',
+                    page: false,
+                    done: function (result, currPage, count) {//数据回调方法
+                        layer.closeAll('loading');
+                    },
+                    cols: [[
+                        /*{type: 'numbers'},*/
+                        {field: 'id', title: 'id', width: '10%'},
+                        {field: "ip",  title: 'IP', width: '15%'},
+                        /*{field: 'pid', title: 'pid'},*/
+                        {field: 'typeName', title: '类名称', width: '35%'},
+                        {field: 'methodName', title: '方法', width: '10%'},
+                        /*{field: 'args', title: '入参'},
+                        {field: 'res', title: '出参'},*/
+                        {field: 'status', title: '状态', width: '10%'},
+                        {templet: '#oper-col', title: '操作', width: '30%'}
+                    ]],
+                    id: 'topicList'
+                });
+            };
+
+            renderTable();
+
+            $('#btn-expand').click(function () {
+                treetable.expandAll('#table1');
+            });
+
+            $('#btn-fold').click(function () {
+                treetable.foldAll('#table1');
+            });
+
+            $('#btn-refresh').click(function () {
+                renderTable();
+            });
+
+            $('#btn-add').click(function () {
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,title: '添加主方法'
+                    ,area: ['590px', '460px']
+                    ,shade: 0
+                    ,maxmin: true
+                    /*,offset: [ //为了演示，随机坐标
+                        Math.random()*($(window).height()-300)
+                        ,Math.random()*($(window).width()-390)
+                    ]*/
+                    ,content: '/info/methodInfo'
+                    //,content: '//127.0.0.1:8080/info/methodInfo'
+                    ,btn: ['提交', '关闭'] //只是为了演示
+                    ,yes: function(index,layero){
+                        //保存表单数据
+                        //得到iframe页的窗口对象
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        //执行iframe页的showMsg方法
+                        var res=iframeWin.saveData();
+                        //alert(res);
+                        if(res){
+                            layer.closeAll();
+                            layer.msg("保存成功");
+                            renderTable();
+                        }
+                    }
+                    ,btn2: function(){
+                        layer.closeAll();
+                    }
+                    ,zIndex: layer.zIndex //重点1
+                    ,success: function(layero){
+                        layer.setTop(layero); //重点2
+                        var data={};
+                        data.pid=-1;
+                        data.ip='${ip}';
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        //执行iframe页的showMsg方法
+                        iframeWin.writeData(data);
+                    }
+                });
+            });
+
+            //监听工具条
+            table.on('tool(table1)', function (obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+
+                if (layEvent === 'btn-add-child') {
+                    //layer.msg('跳转' + data.id);
+                    //判断当前是否存在会话 如果存在 那不允许打开
+                    layer.open({
+                        type: 2 //此处以iframe举例
+                        ,title: '更新方法信息'
+                        ,area: ['590px', '460px']
+                        ,shade: 0
+                        ,maxmin: true
+                        /*,offset: [ //为了演示，随机坐标
+                            Math.random()*($(window).height()-300)
+                            ,Math.random()*($(window).width()-390)
+                        ]*/
+                        ,content: '/info/methodInfo'
+                        //,content: '//127.0.0.1:8080/info/methodInfo'
+                        ,btn: ['提交', '关闭'] //只是为了演示
+                        ,yes: function(index,layero){
+                            //保存表单数据
+                            //得到iframe页的窗口对象
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            //执行iframe页的showMsg方法
+                            var res=iframeWin.saveData();
+                            //alert(res);
+                            if(res){
+                                layer.closeAll();
+                                layer.msg("保存成功");
+                                renderTable();
+                            }
+                        }
+                        ,btn2: function(){
+                            layer.closeAll();
+                        }
+                        ,zIndex: layer.zIndex //重点1
+                        ,success: function(layero){
+                            layer.setTop(layero); //重点2
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            //执行iframe页的showMsg方法
+                            var childData={};
+                            childData.pid=data.id;
+                            childData.ip='${ip}';
+                            iframeWin.writeData(childData);
+                        }
+                    });
+                }
+
+                if (layEvent === 'btn-update') {
+                    //layer.msg('跳转' + data.id);
+                    //判断当前是否存在会话 如果存在 那不允许打开
+                    layer.open({
+                        type: 2 //此处以iframe举例
+                        ,title: '更新方法信息'
+                        ,area: ['590px', '460px']
+                        ,shade: 0
+                        ,maxmin: true
+                        /*,offset: [ //为了演示，随机坐标
+                            Math.random()*($(window).height()-300)
+                            ,Math.random()*($(window).width()-390)
+                        ]*/
+                        ,content: '/info/methodInfo'
+                        //,content: '//127.0.0.1:8080/info/methodInfo'
+                        ,btn: ['提交', '关闭'] //只是为了演示
+                        ,yes: function(index,layero){
+                            //保存表单数据
+                            //得到iframe页的窗口对象
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            //执行iframe页的showMsg方法
+                            var res=iframeWin.saveData();
+                            //alert(res);
+                            if(res){
+                                layer.closeAll();
+                                layer.msg("保存成功");
+                                renderTable();
+                            }
+                        }
+                        ,btn2: function(){
+                            layer.closeAll();
+                        }
+                        ,zIndex: layer.zIndex //重点1
+                        ,success: function(layero){
+                            layer.setTop(layero); //重点2
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            //执行iframe页的showMsg方法
+                            iframeWin.writeData(data);
+                        }
+                    });
+                }
+
+                if (layEvent === 'btn-delete') {
+                    //layer.msg('跳转' + data.id);
+                    //判断当前是否存在会话 如果存在 那不允许打开
+                    $.ajax({
+                        url: "/method/deleteMethod?id"+data.id,	//请求url
+                        type: "GET",	//请求类型  post|get
+                        dataType: "text",  //返回数据的 类型 text|json|html--
+                        data: data,
+                        async:false,
+                        success: function (data) {	//回调函数 和 后台返回的 数据
+                            if (data == "ok") {
+                                layer.msg("删除成功");
+                                renderTable();
+                            }
+                        },
+                        error: function (data) {
+                            layer.msg(data);
+                        }
+                    });
+                }
+            });
+
+
+
+        });
+
+    });
+
+</script>

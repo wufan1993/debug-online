@@ -14,8 +14,8 @@
 <script type="text/html" id="oper-col">
 
     {{ (d.status == 1) ? '
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">设置主方法</a>
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">进入调试</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">方法设置</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">调试</a>
     ' : '' }}
     <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="btn-update">修改</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="btn-delete">删除</a>
@@ -51,11 +51,12 @@
                     {field: 'id', title: 'id'},
                     {field: 'ip', title: 'IP'},
                     {field: 'name', title: '应用名称'},
-                    {field: 'desc', title: '描述'},
                     {field: 'status', title: '状态'},
+
                     /*{field: 'enterTime', title: '进入时间'},
                     {field: 'lostTime', title: '丢失时间'},*/
-                    {templet: '#oper-col', title: 'oper'}
+                    {field: 'desc', title: '描述'},
+                    {templet: '#oper-col', title: 'oper', width: '30%'}
                 ]],
                 done: function () {
                     layer.closeAll('loading');
@@ -114,11 +115,14 @@
             if (layEvent === 'enterDebug') {
                 //layer.msg('跳转' + data.id);
                 //判断当前是否存在会话 如果存在 那不允许打开
-                window.open("/agent/listAgentList?username=" + data.username);
+                window.open("/agent/listAgentList?username=" + data.ip);
             }
             if (layEvent === 'setupMethod') {
+
+                window.open("/method/enterMethodList?ip=" + data.ip);
+
                 //layer.msg('跳转' + data.id);
-                layer.prompt({
+                /*layer.prompt({
                     formType: 2
                     , title: '覆盖   [' + data.username + '] 的method入口集合'
                     , value: ""
@@ -139,8 +143,7 @@
                             layer.msg(data);
                         }
                     });
-
-                });
+                });*/
             }
 
             if (layEvent === 'btn-update') {

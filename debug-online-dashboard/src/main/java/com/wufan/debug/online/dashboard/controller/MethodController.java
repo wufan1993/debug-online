@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wufan.debug.online.dashboard.dao.MethodMapper;
 import com.wufan.debug.online.dashboard.domain.MethodInfo;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
+import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
 import com.wufan.debug.online.dashboard.util.PackRes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.websocket.Session;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,33 +33,40 @@ import java.util.Map;
 @Controller
 @RequestMapping("/method")
 @Slf4j
-public class MethodController {
-
+public class MethodController extends BaseController{
 
     @Resource
     private MethodMapper methodMapper;
 
+    @GetMapping("/enterMethodList")
+    public String listMethod(Model model, String ip) {
+        model.addAttribute("ip", ip);
+        return "/modules/agent/methodList.html";
+    }
+
     @PostMapping("/saveMethod")
     @ResponseBody
     public String saveMethod(MethodInfo methodInfo) {
-        //不考虑并发问题，以数据库跑出异常来控制
-        methodInfo.setId(methodMapper.getMaxId() + 1);
-        try {
-            int insert = methodMapper.insert(methodInfo);
-            if (insert == 1) {
+
+        if(methodInfo!=null){
+            if(methodInfo.getPid()!=-1){
+                methodInfo.setStatus(1);
+            }
+            boolean res = saveEntity(methodMapper, methodInfo, () -> methodMapper.getMaxId() + 1);
+            if (res) {
                 return "ok";
             }
-        } catch (Exception e) {
-            log.error("出现异常", e);
         }
         return "fail";
     }
 
     @GetMapping("/listMethod")
     @ResponseBody
-    public Map<String, Object> listMethod() {
+    public Map<String, Object> listMethod(String ip) {
 
-        List<MethodInfo> methodInfoList = methodMapper.selectList(new QueryWrapper<>());
+        QueryWrapper<MethodInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("ip",ip);
+        List<MethodInfo> methodInfoList = methodMapper.selectList(queryWrapper);
         /*List<AgentClient> clientList = null;
         AtomicInteger integer = new AtomicInteger(1);
         clientList = livingSessions.keySet().stream().map(username -> {
@@ -67,5 +77,17 @@ public class MethodController {
             return client;
         }).collect(Collectors.toList());*/
         return PackRes.getResult(methodInfoList);
+    }
+
+    @GetMapping("/deleteMethod")
+    @ResponseBody
+    public String deleteMethod(Long id) {
+        if(id!=null && id!=0){
+            int i = methodMapper.deleteById(id);
+            if(i==1){
+                return "ok";
+            }
+        }
+        return "fail";
     }
 }

@@ -1,5 +1,6 @@
 package com.wufan.debug.online.dashboard.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
@@ -39,11 +40,12 @@ public class MethodInfo {
      * 接入类型 主方法 0
      * 接入类型 子方法 1
      */
-    private String status;
+    private Integer status;
 
     /**
      * 排序字段
      */
+    @TableField(exist = false)
     private int rank;
 
 }

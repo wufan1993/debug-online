@@ -1,0 +1,90 @@
+<% layout('/layouts/index.html', {title: '客户端列表', libs: []}){ %>
+<!-- ============================================================== -->
+
+<!--<form class="layui-form" action="" lay-filter="example">
+    <div class="layui-form-item">
+        <label class="layui-form-label">输入框</label>
+        <div class="layui-input-block">
+            <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-setval">赋值</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+        </div>
+    </div>
+</form>-->
+
+<form class="layui-form" action="" lay-filter="methodInfoForm">
+    <input type="hidden" id="id" name="id">
+    <input type="hidden" id="ip" name="ip">
+    <input type="hidden" id="pid" name="pid">
+    <div class="layui-form-item">
+        <label class="layui-form-label">类全名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="typeName" autocomplete="off" placeholder="类全路径名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">方法名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="methodName" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+</form>
+
+<% } %>
+
+<script>
+
+    var form;
+    layui.use(['form'], function () {
+        form = layui.form;
+    });
+
+    //添加数据
+    function saveData() {
+        var data = form.val('methodInfoForm');
+        return saveFormData(data);
+    }
+
+    //写入数据
+    function writeData(data){
+        layui.use(['form'], function () {
+            form = layui.form;
+        });
+
+        var formData={};
+        $.each(data,function(i,n){
+            formData[i]=n;
+            //console.log(i+":"+n)
+        });
+        form.val('methodInfoForm', formData);
+    }
+
+    //保存数据
+    function saveFormData(data) {
+        var flag = false;
+        $.ajax({
+            url: "/method/saveMethod",	//请求url
+            type: "POST",	//请求类型  post|get
+            dataType: "text",  //返回数据的 类型 text|json|html--
+            data: data,
+            async:false,
+            success: function (data) {	//回调函数 和 后台返回的 数据
+                if (data == "ok") {
+                    flag = true;
+                }
+            },
+            error: function (data) {
+                layer.msg(data);
+            }
+        });
+        return flag;
+    }
+
+
+</script>

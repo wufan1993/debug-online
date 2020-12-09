@@ -59,6 +59,8 @@ public class MachineController extends BaseController {
             if (livingSessions.containsKey(machineInfo.getIp())) {
                 machineInfo.setStatus(1);
             }
+            //测试主方法用
+            machineInfo.setStatus(1);
         });
         /*List<AgentClient> clientList = null;
         AtomicInteger integer = new AtomicInteger(1);
