@@ -66,16 +66,15 @@ public class DebugAgent {
         String packagePrefix = regexp;
 
         AgentBuilder.Transformer transformer = (builder, typeDescription, classLoader, javaModule) -> {
-            return builder
+            DynamicType.Builder.MethodDefinition.ImplementationDefinition<?> main = builder
                     //.method(ElementMatchers.any()) // 拦截任意方法
                     .method(ElementMatchers.not(ElementMatchers.nameStartsWith("main"))
                             .and(ElementMatchers.not(ElementMatchers.isAbstract()))
                             .and(ElementMatchers.not(ElementMatchers.isStatic()))
                             .and(ElementMatchers.not(ElementMatchers.isGetter()))
                             .and(ElementMatchers.not(ElementMatchers.isSetter()))
-
-                    ) // 拦截任意方法
-                    .intercept(MethodDelegation.to(MethodIntercept.class)); // 委托
+                    );
+            return main.intercept(MethodDelegation.to(MethodIntercept.class)); // 委托
         };
 
         AgentBuilder.Listener listener = new AgentBuilder.Listener() {

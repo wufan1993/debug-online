@@ -22,6 +22,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.wufan.debug.online</groupId>
+            <artifactId>debug-online-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.1</version>
@@ -95,6 +100,7 @@
 
                     <artifactSet>
                         <includes>
+                            <include>com.wufan.debug.online:debug-online-common:jar:</include>
                             <include>com.fasterxml.jackson.core:jackson-databind:jar:</include>
                             <include>com.fasterxml.jackson.core:jackson-annotations:jar:</include>
                             <include>com.fasterxml.jackson.core:jackson-core:jar:</include>

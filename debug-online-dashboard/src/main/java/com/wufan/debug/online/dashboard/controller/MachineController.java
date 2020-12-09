@@ -3,7 +3,6 @@ package com.wufan.debug.online.dashboard.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wufan.debug.online.dashboard.dao.MachineMapper;
 import com.wufan.debug.online.dashboard.domain.MachineInfo;
-import com.wufan.debug.online.dashboard.socket.config.AgentClient;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.util.PackRes;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,6 @@ import javax.annotation.Resource;
 import javax.websocket.Session;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * 我本非凡
@@ -33,7 +30,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/machine")
 @Slf4j
-public class MachineController {
+public class MachineController extends BaseController {
 
 
     @Resource
@@ -42,15 +39,9 @@ public class MachineController {
     @PostMapping("/saveMachine")
     @ResponseBody
     public String saveMachine(MachineInfo machineInfo) {
-        //不考虑并发问题，以数据库跑出异常来控制
-        machineInfo.setId(machineMapper.getMaxId() + 1);
-        try {
-            int insert = machineMapper.insert(machineInfo);
-            if (insert == 1) {
-                return "ok";
-            }
-        } catch (Exception e) {
-            log.error("出现异常", e);
+        boolean res = saveEntity(machineMapper, machineInfo, () -> machineMapper.getMaxId() + 1);
+        if (res) {
+            return "ok";
         }
         return "fail";
     }
@@ -60,13 +51,12 @@ public class MachineController {
     @ResponseBody
     public Map<String, Object> listMachine() {
 
-
         List<MachineInfo> machineInfoList = machineMapper.selectList(new QueryWrapper<>());
         final Map<String, Session> livingSessions = WebSocketSession.AGENT_REMOTE.getLivingSessions();
 
         machineInfoList.forEach(machineInfo -> {
             machineInfo.setPid(-1L);
-            if(livingSessions.containsKey(machineInfo.getIp())){
+            if (livingSessions.containsKey(machineInfo.getIp())) {
                 machineInfo.setStatus(1);
             }
         });
@@ -80,5 +70,17 @@ public class MachineController {
             return client;
         }).collect(Collectors.toList());*/
         return PackRes.getResult(machineInfoList);
+    }
+
+    @GetMapping("/deleteMachine")
+    @ResponseBody
+    public String deleteMachine(Long id) {
+        if(id!=null && id!=0){
+            int i = machineMapper.deleteById(id);
+            if(i==1){
+                return "ok";
+            }
+        }
+        return "fail";
     }
 }

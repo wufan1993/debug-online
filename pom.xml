@@ -11,6 +11,7 @@
     <modules>
         <module>debug-online-agent</module>
         <module>debug-online-dashboard</module>
+        <module>debug-online-common</module>
     </modules>
 
 

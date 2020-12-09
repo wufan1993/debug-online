@@ -17,8 +17,8 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">设置主方法</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">进入调试</a>
     ' : '' }}
-
-
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="btn-update">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="btn-delete">删除</a>
 </script>
 
 <script>
@@ -72,7 +72,7 @@
         $('#btn-add').click(function () {
             layer.open({
                 type: 2 //此处以iframe举例
-                ,title: '机器信息操作'
+                ,title: '添加机器信息'
                 ,area: ['590px', '460px']
                 ,shade: 0
                 ,maxmin: true
@@ -88,7 +88,7 @@
                     //得到iframe页的窗口对象
                     var iframeWin = window[layero.find('iframe')[0]['name']];
                     //执行iframe页的showMsg方法
-                    var res=iframeWin.submitMachineInfo();
+                    var res=iframeWin.saveData();
                     //alert(res);
                     if(res){
                         layer.closeAll();
@@ -140,6 +140,69 @@
                         }
                     });
 
+                });
+            }
+
+            if (layEvent === 'btn-update') {
+                //layer.msg('跳转' + data.id);
+                //判断当前是否存在会话 如果存在 那不允许打开
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,title: '更新机器信息'
+                    ,area: ['590px', '460px']
+                    ,shade: 0
+                    ,maxmin: true
+                    /*,offset: [ //为了演示，随机坐标
+                        Math.random()*($(window).height()-300)
+                        ,Math.random()*($(window).width()-390)
+                    ]*/
+                    ,content: '/info/machineInfo'
+                    //,content: '//127.0.0.1:8080/info/machineInfo'
+                    ,btn: ['提交', '关闭'] //只是为了演示
+                    ,yes: function(index,layero){
+                        //保存表单数据
+                        //得到iframe页的窗口对象
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        //执行iframe页的showMsg方法
+                        var res=iframeWin.saveData();
+                        //alert(res);
+                        if(res){
+                            layer.closeAll();
+                            layer.msg("保存成功");
+                            renderTable();
+                        }
+                    }
+                    ,btn2: function(){
+                        layer.closeAll();
+                    }
+                    ,zIndex: layer.zIndex //重点1
+                    ,success: function(layero){
+                        layer.setTop(layero); //重点2
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        //执行iframe页的showMsg方法
+                        iframeWin.writeData(data);
+                    }
+                });
+            }
+
+            if (layEvent === 'btn-delete') {
+                //layer.msg('跳转' + data.id);
+                //判断当前是否存在会话 如果存在 那不允许打开
+                $.ajax({
+                    url: "/machine/deleteMachine?id"+data.id,	//请求url
+                    type: "GET",	//请求类型  post|get
+                    dataType: "text",  //返回数据的 类型 text|json|html--
+                    data: data,
+                    async:false,
+                    success: function (data) {	//回调函数 和 后台返回的 数据
+                        if (data == "ok") {
+                            layer.msg("删除成功");
+                            renderTable();
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg(data);
+                    }
                 });
             }
         });

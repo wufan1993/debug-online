@@ -22,6 +22,11 @@
         <main.class>com.wufan.debug.online.dashboard.O2oAgentDashboardApplication</main.class>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.wufan.debug.online</groupId>
+            <artifactId>debug-online-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>

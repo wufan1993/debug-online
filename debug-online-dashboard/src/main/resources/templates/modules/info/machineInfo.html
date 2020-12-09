@@ -19,6 +19,7 @@
 </form>-->
 
 <form class="layui-form" action="" lay-filter="machineInfoForm">
+    <input type="hidden" id="id" name="id">
     <div class="layui-form-item">
         <label class="layui-form-label">IP</label>
         <div class="layui-input-block">
@@ -56,8 +57,28 @@
         form = layui.form;
     });
 
-    function submitMachineInfo() {
+    //添加数据
+    function saveData() {
         var data = form.val('machineInfoForm');
+        return saveFormData(data);
+    }
+
+    //写入数据
+    function writeData(data){
+        layui.use(['form'], function () {
+            form = layui.form;
+        });
+
+        var formData={};
+        $.each(data,function(i,n){
+            formData[i]=n;
+            //console.log(i+":"+n)
+        });
+        form.val('machineInfoForm', formData);
+    }
+
+    //保存数据
+    function saveFormData(data) {
         var flag = false;
         $.ajax({
             url: "/machine/saveMachine",	//请求url
@@ -76,4 +97,6 @@
         });
         return flag;
     }
+
+
 </script>
