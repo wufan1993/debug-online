@@ -18,9 +18,9 @@ public class MethodInfo {
     /**
      * 表格使用 默认为 -1
      */
-    private int pid;
+    private Long pid;
 
-    private int id;
+    private Long id;
 
     /**
      * 所属机器IP
@@ -36,8 +36,8 @@ public class MethodInfo {
     private String methodName;
 
     /**
-     * 接入类型 主方法 1
-     * 接入类型 子方法 2
+     * 接入类型 主方法 0
+     * 接入类型 子方法 1
      */
     private String status;
 

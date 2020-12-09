@@ -6,6 +6,7 @@ import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.socket.server.AgentClientServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
+import com.wufan.debug.online.dashboard.util.PackRes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -70,22 +71,6 @@ public class AgentController {
     }
 
 
-    @GetMapping("/getAgentClient")
-    @ResponseBody
-    public Map<String, Object> getAgentClient() {
-        List<AgentClient> clientList = null;
-        final Map<String, Session> livingSessions = WebSocketSession.AGENT_REMOTE.getLivingSessions();
-        AtomicInteger integer = new AtomicInteger(1);
-        clientList = livingSessions.keySet().stream().map(username -> {
-            AgentClient client = new AgentClient();
-            client.setPid(-1);
-            client.setId(integer.getAndIncrement());
-            client.setUsername(username);
-            return client;
-        }).collect(Collectors.toList());
-        return getRes(clientList);
-    }
-
     @GetMapping("/getAgentList")
     @ResponseBody
     public Map<String, Object> getAgentList(String username) {
@@ -111,7 +96,7 @@ public class AgentController {
             resData.sort((o1, o2) -> o2.getEnterName().compareTo(o1.getEnterName()));
             dataList = resData;
         }
-        return getRes(dataList);
+        return PackRes.getResult(dataList);
     }
 
     @GetMapping("/getAgentData")
@@ -134,32 +119,7 @@ public class AgentController {
                 });
             }
         }
-        return getRes(processAgents);
-    }
-
-
-    public Map<String, Object> getRes(List<?> data) {
-        Map<String, Object> object = new HashMap<>();
-        object.put("code", 0);
-        object.put("msg", "ok");
-        if (data == null) {
-            object.put("data", new ArrayList<>());
-            object.put("count", 0);
-        } else {
-            object.put("data", data);
-            object.put("count", data.size());
-        }
-/*        if (data == null) {
-            object.put("code", -1);
-            object.put("msg", "失败");
-            return object;
-        } else {
-            object.put("code", 0);
-            object.put("msg", "ok");
-            object.put("data", data);
-            object.put("count", data.size());
-        }*/
-        return object;
+        return PackRes.getResult(processAgents);
     }
 
 

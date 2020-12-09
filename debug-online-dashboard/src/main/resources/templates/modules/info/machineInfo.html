@@ -1,6 +1,23 @@
 <% layout('/layouts/index.html', {title: '客户端列表', libs: []}){ %>
 <!-- ============================================================== -->
 
+<!--<form class="layui-form" action="" lay-filter="example">
+    <div class="layui-form-item">
+        <label class="layui-form-label">输入框</label>
+        <div class="layui-input-block">
+            <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-setval">赋值</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+        </div>
+    </div>
+</form>-->
+
 <form class="layui-form" action="" lay-filter="machineInfoForm">
     <div class="layui-form-item">
         <label class="layui-form-label">IP</label>
@@ -12,27 +29,19 @@
     <div class="layui-form-item">
         <label class="layui-form-label">应用编号</label>
         <div class="layui-input-block">
-            <input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入应用编号" class="layui-input">
+            <input type="text" name="name" autocomplete="off" placeholder="请输入应用编号" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">描述信息</label>
         <div class="layui-input-block">
-            <input type="text" name="desc" lay-verify="title" autocomplete="off" placeholder="请输入其它描述相关信息" class="layui-input">
+            <input type="text" name="desc" autocomplete="off" placeholder="请输入其它描述相关信息" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">匹配正则</label>
         <div class="layui-input-block">
-            <input type="text" name="regexp" lay-verify="title" autocomplete="off" placeholder="请输入项目匹配正则路径" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <!--<button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-setval">赋值</button>
-            <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>-->
-            <button type="submit" hidden id="LAY-component-form-submit">立即提交</button>
+            <input type="text" name="regexp" autocomplete="off" placeholder="请输入项目匹配正则路径" class="layui-input">
         </div>
     </div>
 
@@ -40,45 +49,31 @@
 
 <% } %>
 
-<!-- 操作列 -->
-<script type="text/html" id="oper-col">
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">设置主方法</a>
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">进入调试</a>
-</script>
-
 <script>
 
-    layui.use(['form', 'layedit', 'laydate'], function(){
-        var form = layui.form
-            ,layer = layui.layer
-            ,layedit = layui.layedit;
-
-        //监听提交
-        form.on('submit(submitMachineInfo)', function(data){
-            layer.alert(JSON.stringify(data.field), {
-
-                title: '最终的提交信息'
-            });
-            return false;
-        });
-
-        //表单赋值
-        layui.$('#LAY-component-form-setval').on('click', function(){
-            form.val('machineInfoForm', {
-                "username": "贤心" // "name": "value"
-                ,"desc": "我爱 layui"
-            });
-        });
-
-        //表单取值
-        layui.$('#LAY-component-form-getval').on('click', function(){
-            var data = form.val('machineInfoForm');
-            alert(JSON.stringify(data));
-        });
+    var form;
+    layui.use(['form'], function () {
+        form = layui.form;
     });
 
-    function submitMachineInfo(){
-        alert("子方法调用");
-        $('#LAY-component-form-submit').click();
+    function submitMachineInfo() {
+        var data = form.val('machineInfoForm');
+        var flag = false;
+        $.ajax({
+            url: "/machine/saveMachine",	//请求url
+            type: "POST",	//请求类型  post|get
+            dataType: "text",  //返回数据的 类型 text|json|html--
+            data: data,
+            async:false,
+            success: function (data) {	//回调函数 和 后台返回的 数据
+                if (data == "ok") {
+                    flag = true;
+                }
+            },
+            error: function (data) {
+                layer.msg(data);
+            }
+        });
+        return flag;
     }
 </script>

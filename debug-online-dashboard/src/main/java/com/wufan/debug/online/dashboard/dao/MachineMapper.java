@@ -3,6 +3,10 @@ package com.wufan.debug.online.dashboard.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wufan.debug.online.dashboard.domain.MachineInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * 我本非凡
@@ -16,4 +20,12 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MachineMapper extends BaseMapper<MachineInfo> {
+
+
+    /**
+     * 获取数据库最大Id
+     * @return
+     */
+    @Select("SELECT max(id) from MACHINE_INFO")
+    Long getMaxId();
 }

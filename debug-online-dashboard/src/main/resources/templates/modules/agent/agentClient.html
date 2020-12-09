@@ -12,8 +12,13 @@
 
 <!-- 操作列 -->
 <script type="text/html" id="oper-col">
+
+    {{ (d.status == 1) ? '
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">设置主方法</a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">进入调试</a>
+    ' : '' }}
+
+
 </script>
 
 <script>
@@ -38,13 +43,18 @@
                 treeDefaultClose: true,
                 treeLinkage: false,
                 elem: '#table1',
-                url: '/agent/getAgentClient',
+                url: '/machine/listMachine',
                 page: false,
                 cols: [[
                     {type: 'numbers'},
                     /*{field: 'pid', title: 'pid'},*/
                     {field: 'id', title: 'id'},
-                    {field: 'username', title: 'IP'},
+                    {field: 'ip', title: 'IP'},
+                    {field: 'name', title: '应用名称'},
+                    {field: 'desc', title: '描述'},
+                    {field: 'status', title: '状态'},
+                    /*{field: 'enterTime', title: '进入时间'},
+                    {field: 'lostTime', title: '丢失时间'},*/
                     {templet: '#oper-col', title: 'oper'}
                 ]],
                 done: function () {
@@ -75,14 +85,16 @@
                 ,btn: ['提交', '关闭'] //只是为了演示
                 ,yes: function(index,layero){
                     //保存表单数据
-                    //获取iframe的body元素
-                    var body = layer.getChildFrame('body',index);
                     //得到iframe页的窗口对象
                     var iframeWin = window[layero.find('iframe')[0]['name']];
                     //执行iframe页的showMsg方法
-                    iframeWin.submitMachineInfo();
-
-
+                    var res=iframeWin.submitMachineInfo();
+                    //alert(res);
+                    if(res){
+                        layer.closeAll();
+                        layer.msg("保存成功");
+                        renderTable();
+                    }
                 }
                 ,btn2: function(){
                     layer.closeAll();

@@ -1,4 +1,4 @@
-DELETE FROM machine;
+DELETE FROM machine_info;
 
-INSERT INTO machine (ip, name,desc) VALUES
-  ('192.168.80.65', 'debug-online-dashboard', '本地测试机器');
+INSERT INTO machine_info (id,ip, name,desc) VALUES
+  (1,'127.0.0.1', 'debug-online-dashboard', '本地测试机器');

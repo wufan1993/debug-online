@@ -1,5 +1,6 @@
 package com.wufan.debug.online.dashboard.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 /**
  * 我本非凡
@@ -14,8 +15,10 @@ import lombok.Data;
 @Data
 public class MachineInfo {
 
-    private String pid;
-    private String id;
+
+    @TableField(exist = false)
+    private Long pid;
+    private Long id;
     /**
      * 机器IP
      */
@@ -33,15 +36,17 @@ public class MachineInfo {
     /**
      * 机器状态 0表示丢失 1表示在线
      */
-    private String status;
+    private int status;
 
     /**
      * 进入时间
      */
+    @TableField(exist = false)
     private String enterTime;
     /**
      * 丢失时间
      */
+    @TableField(exist = false)
     private String lostTime;
 
 
