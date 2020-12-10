@@ -37,20 +37,27 @@ public class MethodIntercept {
             //如果是主方法进入 那么强制设置一个新的rootId
             String typeMethod = method.getDeclaringClass().getName() + "#" + method.getName();
 
+            //判断当前是否存在阻塞主方法
+
+
             if (InterceptStatus.containMethodList(typeMethod)) {
+                //如果存在主业务，那么需要阻塞其它任务
+                if (TrackContext.getRootMethodId(typeMethod) != null) {
+                    throw new RuntimeException("当前主业务正在调试运行中，请稍后再访问");
+                }
                 TrackContext.initRootId();
                 TrackContext.setStaticRootMethod(typeMethod);
                 flag = true;
             }
 
-            if(TrackContext.getRootId() == null){
+            if (TrackContext.getRootId() == null) {
                 //判断是不是关联子方法
-                String rootMethod=InterceptStatus.getParentMethodList(typeMethod);
-                if(rootMethod!=null){
+                String rootMethod = InterceptStatus.getParentMethodList(typeMethod);
+                if (rootMethod != null) {
                     String rootMethodId = TrackContext.getRootMethodId(rootMethod);
                     if (rootMethodId != null) {
                         TrackContext.setRootId(rootMethodId);
-                        childFlag=true;
+                        childFlag = true;
                     }
                 }
             }
@@ -122,7 +129,7 @@ public class MethodIntercept {
                     TrackContext.removeStaticRootMethod(typeMethod);
                     TrackContext.removeRootMethodTrack(TrackContext.getRootId());
                 }
-                if(flag || childFlag){
+                if (flag || childFlag) {
                     TrackContext.removeCacheId();
                 }
             }

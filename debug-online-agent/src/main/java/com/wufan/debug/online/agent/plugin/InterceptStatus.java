@@ -1,5 +1,7 @@
 package com.wufan.debug.online.agent.plugin;
 
+import com.wufan.debug.online.agent.track.TrackContext;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,6 +48,7 @@ public class InterceptStatus {
     public static void clearMethodList() {
         //LogTrack.appendLog("清空主方法集合");
         methodRef.clear();
+        TrackContext.clearRootTrack();
     }
 
     /**

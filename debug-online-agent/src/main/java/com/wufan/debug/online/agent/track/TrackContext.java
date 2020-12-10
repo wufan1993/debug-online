@@ -73,6 +73,7 @@ public class TrackContext {
      */
     public static void clearRootTrack() {
         methodTrack.clear();
+        TrackContext.clearStaticRootMethod();
     }
 
 
@@ -133,6 +134,9 @@ public class TrackContext {
     }
     public static void removeStaticRootMethod(String typeMethod) {
         rootMethod.remove(typeMethod);
+    }
+    public static void clearStaticRootMethod() {
+        rootMethod.clear();
     }
 
     public static String getRootMethodId(String typeMethod) {

@@ -1,6 +1,7 @@
 package com.wufan.debug.online.agent.service;
 
 import com.wufan.debug.online.agent.plugin.InterceptStatus;
+import com.wufan.debug.online.agent.track.TrackContext;
 import com.wufan.debug.online.agent.utils.LogTrack;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
@@ -21,7 +22,10 @@ public class AgentCommandClientService {
         //初始化枚举处理方法
 
         //操作客户端监控状态
-        AgentCommandEnum.OPEN_CLIENT.setConsumer(s -> InterceptStatus.setSwitch(true));
+        AgentCommandEnum.OPEN_CLIENT.setConsumer(s -> {
+            InterceptStatus.setSwitch(true);
+            TrackContext.clearStaticRootMethod();
+        });
 
         AgentCommandEnum.CLOSE_CLIENT.setConsumer(s -> InterceptStatus.setSwitch(false));
 
