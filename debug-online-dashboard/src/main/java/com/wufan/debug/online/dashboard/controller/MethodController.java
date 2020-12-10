@@ -89,8 +89,10 @@ public class MethodController extends BaseController{
     @ResponseBody
     public String deleteMethod(Long id) {
         if(id!=null && id!=0){
+            MethodInfo methodInfo = methodMapper.selectById(id);
             int i = methodMapper.deleteById(id);
             if(i==1){
+                agentCommandServerService.flushAllMethodInfo(methodInfo.getIp());
                 return "ok";
             }
         }
