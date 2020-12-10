@@ -4,7 +4,6 @@ import com.wufan.debug.online.agent.plugin.InterceptStatus;
 import com.wufan.debug.online.agent.utils.LogTrack;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
-import com.wufan.debug.online.utils.JsonUtils;
 
 /**
  * 我本非凡
@@ -29,7 +28,14 @@ public class AgentCommandClientService {
         //操作主方法
         AgentCommandEnum.CLEAR_METHOD.setConsumer(s -> InterceptStatus.clearMethodList());
 
-        AgentCommandEnum.ADD_METHOD.setConsumer(InterceptStatus::addMethodList);
+        AgentCommandEnum.ADD_METHOD.setConsumer(s -> {
+            if (s.contains(",")) {
+                String[] res = s.split(",");
+                InterceptStatus.addMethodList(res[0], res[1]);
+            } else {
+                InterceptStatus.addMethodList(s, null);
+            }
+        });
 
         //操作参数方法
         AgentCommandEnum.ADD_MONITOR_METHOD.setConsumer(InterceptStatus::addMethodParamList);
@@ -47,7 +53,7 @@ public class AgentCommandClientService {
      */
     public static void executeCommand(AgentCommand agentCommand) {
         AgentCommandEnum enumByCommand = AgentCommandEnum.getEnumByCommand(agentCommand.getCommand());
-        LogTrack.appendLog(String.format("操作=>%s\t命令%s\t数据:%s",enumByCommand.getDesc(),enumByCommand.getCommand(),agentCommand.getContent()));
+        LogTrack.appendLog(String.format("操作=>%s\t命令%s\t数据:%s", enumByCommand.getDesc(), enumByCommand.getCommand(), agentCommand.getContent()));
         enumByCommand.executeCommand(agentCommand.getContent());
     }
 }

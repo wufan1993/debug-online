@@ -30,7 +30,17 @@ public class DebugAgent {
 
     //JVM 首先尝试在代理类上调用以下方法
     public static void premain(String agentArgs, Instrumentation inst) {
-        String regexp = agentArgs;
+        String regexp = null;
+        if (agentArgs != null && !agentArgs.equals("")) {
+            if (agentArgs.indexOf("&&") > 0) {
+                //设置正则
+                regexp = agentArgs.split("&&")[0];
+                //设置远程服务
+                remoteHost = agentArgs.split("&&")[1];
+            } else {
+                regexp = agentArgs;
+            }
+        }
         if (regexp == null) {
             LogTrack.appendLog("当前服务未配置扫描包数据");
             return;
@@ -79,7 +89,7 @@ public class DebugAgent {
                 MethodList<MethodDescription.InDefinedShape> declaredMethods = typeDescription.getDeclaredMethods();
                 declaredMethods.forEach(methodDescription -> {
                     System.out.println("onTransformation PreMainAgent get loaded dynamicType:" + methodDescription.getActualName());
-                    methodDescription.getDeclaringType().getCanonicalName();
+                    //methodDescription.getDeclaringType().getCanonicalName();
                 });
                 //System.out.println("onTransformation PreMainAgent get loaded dynamicType:" + typeDescription.getCanonicalName());
             }

@@ -4,16 +4,12 @@ import com.wufan.debug.online.agent.track.NumberIncrease;
 import com.wufan.debug.online.agent.track.ProcessAgent;
 import com.wufan.debug.online.agent.track.ProcessSendSocket;
 import com.wufan.debug.online.agent.track.TrackContext;
-import com.wufan.debug.online.agent.utils.LogTrack;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
 /**
@@ -40,29 +36,24 @@ public class MethodIntercept {
             String typeMethod = method.getDeclaringClass().getName() + "#" + method.getName();
 
             if (InterceptStatus.containMethodList(typeMethod)) {
-                TrackContext.removeCacheId();
-                //如果不是子线程
-                String rootId = UUID.randomUUID().toString();
-                TrackContext.setRootId(rootId);
+                TrackContext.initRootId();
+                TrackContext.setStaticRootMethod(typeMethod);
                 flag = true;
             }
 
-            if (TrackContext.getRootId() == null) {
-                //如果没有rootId 那么直接退出，不参与记录日志
-                return callable.call();
-            } else {
-                //判断是不是子线程
-                Integer extendId = TrackContext.getExtendId();
-                if (extendId != null) {
-                    //如果是子线程初始化
-                    if (TrackContext.getParentId() == null || !TrackContext.getParentId().equals(extendId)) {
-                        TrackContext.setParentId(extendId);
+            if(!flag){
+                //判断是不是关联子方法
+                String rootMethod=InterceptStatus.getParentMethodList(typeMethod);
+                if(rootMethod!=null){
+                    String rootMethodId = TrackContext.getRootMethodId(rootMethod);
+                    if (rootMethodId != null) {
+                        TrackContext.setRootId(rootMethodId);
                     }
                 }
             }
 
-            //如果入参 和方法一样 那么就不进行记录了 通过入参+类型方法去判断
-            if (!TrackContext.getContinueNext(typeMethod, args)) {
+            if (TrackContext.getRootId() == null) {
+                //如果没有rootId 那么直接退出，不参与记录日志
                 return callable.call();
             }
 
@@ -123,6 +114,7 @@ public class MethodIntercept {
                 ProcessSendSocket.toSocketJsonStr(processError);
                 throw e;
             } finally {
+                TrackContext.removeStaticRootMethod(typeMethod);
                 TrackContext.setExtendId(oldExtendId);
                 if (flag) {
                     TrackContext.removeCacheId();

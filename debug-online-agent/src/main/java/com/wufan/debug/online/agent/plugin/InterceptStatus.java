@@ -1,6 +1,8 @@
 package com.wufan.debug.online.agent.plugin;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -25,6 +27,8 @@ public class InterceptStatus {
 
     protected static Set<String> methodParamList = new HashSet<>();
 
+    protected static Map<String,String> methodRef=new HashMap<>();
+
 
     /**
      * 设置开关状态
@@ -47,9 +51,10 @@ public class InterceptStatus {
     /**
      * 清空主方法集合
      */
-    public static void addMethodList(String typeMethod) {
+    public static void addMethodList(String mainMethod,String childMethod) {
         //LogTrack.appendLog("添加主方法集合==>>\t" + typeMethod);
-        methodMainList.add(typeMethod);
+        //methodMainList.add(typeMethod);
+        methodRef.put(mainMethod,childMethod);
     }
 
     public static boolean containMethodList(String typeMethod) {
@@ -94,4 +99,12 @@ public class InterceptStatus {
     }
 
 
+    /**
+     * 获取父亲方法
+     * @param typeMethod
+     * @return
+     */
+    public static String getParentMethodList(String typeMethod) {
+        return methodRef.get(typeMethod);
+    }
 }

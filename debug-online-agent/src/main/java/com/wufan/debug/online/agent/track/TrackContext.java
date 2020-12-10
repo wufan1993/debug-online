@@ -2,6 +2,7 @@ package com.wufan.debug.online.agent.track;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -16,13 +17,20 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class TrackContext {
 
-    private static final InheritableThreadLocal<String> trackRoot = new InheritableThreadLocal<>();
+    private static final ThreadLocal<String> trackRoot = new ThreadLocal<>();
 
     private static final ThreadLocal<Integer> trackParent = new ThreadLocal<>();
 
-    private static final InheritableThreadLocal<Integer> trackExtend = new InheritableThreadLocal<>();
-    private static final ThreadLocal<Map<String, Object>> preTypeMethodData = new ThreadLocal<>();
+    //private static final ThreadLocal<Map<String, Object>> preTypeMethodData = new ThreadLocal<>();
     private static Map<String, Map<String, AtomicLong>> methodTrack = new HashMap<>();
+
+
+    private static final ThreadLocal<Integer> trackExtend = new ThreadLocal<>();
+
+    private static Map<String,String> rootMethod=new HashMap<>();
+
+    //主方法依赖关系 key:主方法/子方法 value:父方法
+    //private static Map<String,String> mainMethodRef=new HashMap<>();
 
     /**
      * 0 代表不记录 1代表通过 2代表超过拒绝
@@ -76,9 +84,15 @@ public class TrackContext {
         return trackRoot.get();
     }
 
-    public static void setRootId(String linkId) {
+    public static void initRootId() {
         //ThreadContext.put("rootId",linkId);
-        trackRoot.set(linkId);
+        TrackContext.removeCacheId();
+        //如果不是子线程
+        String rootId = UUID.randomUUID().toString();
+        trackRoot.set(rootId);
+    }
+    public static void setRootId(String rootId) {
+        trackRoot.set(rootId);
     }
 
     public static void clearParentId() {
@@ -114,6 +128,17 @@ public class TrackContext {
         TrackContext.clearExtendId();
     }
 
+    public static void setStaticRootMethod(String typeMethod) {
+        rootMethod.put(typeMethod,TrackContext.getRootId());
+    }
+    public static void removeStaticRootMethod(String typeMethod) {
+        rootMethod.remove(typeMethod);
+    }
+
+    public static String getRootMethodId(String typeMethod) {
+        return rootMethod.get(typeMethod);
+    }
+
     /**
      * 比较上一个方法是否执行过同样的过程 如果是 那么就不用记录了
      *
@@ -121,7 +146,7 @@ public class TrackContext {
      * @param args
      * @return
      */
-    public static boolean getContinueNext(String typeMethod, Object[] args) {
+    /*public static boolean getContinueNext(String typeMethod, Object[] args) {
         Map<String, Object> preTypeMethod = preTypeMethodData.get();
         Boolean flag = true;
 
@@ -143,5 +168,5 @@ public class TrackContext {
         preTypeMethod.put("typeMethod", typeMethod);
         preTypeMethod.put("args", args);
         return flag;
-    }
+    }*/
 }

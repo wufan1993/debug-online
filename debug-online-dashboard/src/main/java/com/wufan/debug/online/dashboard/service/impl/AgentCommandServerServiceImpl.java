@@ -3,15 +3,17 @@ package com.wufan.debug.online.dashboard.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wufan.debug.online.dashboard.dao.MethodMapper;
 import com.wufan.debug.online.dashboard.domain.MethodInfo;
+import com.wufan.debug.online.dashboard.domain.MethodStack;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.utils.JsonUtils;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 我本非凡
@@ -42,13 +44,36 @@ public class AgentCommandServerServiceImpl implements AgentCommandServerService 
         queryWrapper.eq("ip", ip);
         List<MethodInfo> methodInfoList = methodMapper.selectList(queryWrapper);
 
+
+        Map<Long,MethodStack> methodRefMap=new HashMap<>();
+        methodInfoList.forEach(methodInfo -> {
+            if(methodInfo.getStatus()==0){
+                methodRefMap.put(methodInfo.getId(),new MethodStack(methodInfo.getTypeName()+"#"+methodInfo.getMethodName()));
+            }
+        });
+        methodInfoList.forEach(methodInfo -> {
+            if(methodInfo.getStatus()==1){
+                methodRefMap.get(methodInfo.getPid()).getChildTypeMethod().add(methodInfo.getTypeName()+"#"+methodInfo.getMethodName());
+            }
+        });
+
+
         AgentCommand clearCommand = new AgentCommand(AgentCommandEnum.CLEAR_METHOD, "");
         //发送清空命令
-        WebSocketSession.AGENT_CLIENT.sendText(ip,clearCommand);
+        WebSocketSession.AGENT_CLIENT.sendText(ip, clearCommand);
         //开始添加方法
-        methodInfoList.forEach(methodInfo -> {
-            AgentCommand addMethod=new AgentCommand(AgentCommandEnum.ADD_METHOD,methodInfo.getTypeName()+"#"+methodInfo.getMethodName());
+
+        methodRefMap.values().forEach(methodStack -> {
+            //添加主方法
+            String mainContent=methodStack.getTypeMethod();
+            AgentCommand addMethod = new AgentCommand(AgentCommandEnum.ADD_METHOD, mainContent);
             WebSocketSession.AGENT_CLIENT.sendText(ip, addMethod);
+            //添加子方法
+            methodStack.getChildTypeMethod().forEach(childStack->{
+                String childContent=mainContent+","+childStack;
+                AgentCommand childMethod = new AgentCommand(AgentCommandEnum.ADD_METHOD, childContent);
+                WebSocketSession.AGENT_CLIENT.sendText(ip, childMethod);
+            });
         });
     }
 }
