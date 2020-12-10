@@ -30,7 +30,7 @@ public class TestException {
 
     private void testExe3(int i) {
         System.out.println(i);
-        if (i == 2) {
+        if (i == 50) {
             throw new RuntimeException("抛出异常");
         }
 

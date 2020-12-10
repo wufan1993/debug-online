@@ -14,26 +14,30 @@ import com.wufan.debug.online.model.AgentCommandEnum;
  */
 public class AgentCommand {
 
-    private AgentCommandEnum commandEnum;
+    private String command;
 
     private String content;
 
-    public AgentCommandEnum getCommandEnum() {
-        return commandEnum;
+
+    public AgentCommand() {
     }
 
-
     public AgentCommand(AgentCommandEnum commandEnum) {
-        this.commandEnum = commandEnum;
+        this.command = commandEnum.getCommand();
     }
 
     public AgentCommand(AgentCommandEnum commandEnum, String content) {
-        this.commandEnum = commandEnum;
+        this.command = commandEnum.getCommand();
         this.content = content;
     }
 
-    public void setCommandEnum(AgentCommandEnum commandEnum) {
-        this.commandEnum = commandEnum;
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     public String getContent() {

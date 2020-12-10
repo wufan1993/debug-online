@@ -1,7 +1,5 @@
 package com.wufan.debug.online.agent.plugin;
 
-import com.wufan.debug.online.agent.utils.LogTrack;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,19 +26,13 @@ public class InterceptStatus {
     protected static Set<String> methodParamList = new HashSet<>();
 
 
-    static {
-        methodMainList.add("com.jddj.o2o.ApiTest.http_lt1");
-        methodMainList.add("com.jddj.o2o.InheritTest#testExe1");
-
-    }
-
     /**
      * 设置开关状态
      *
      * @param onOff
      */
     public static void setSwitch(boolean onOff) {
-        LogTrack.appendLog("方法拦截开关-agent==>>" + onOff);
+        //LogTrack.appendLog("方法拦截开关-agent==>>" + onOff);
         switchOff.set(onOff);
     }
 
@@ -48,7 +40,7 @@ public class InterceptStatus {
      * 清空主方法集合
      */
     public static void clearMethodList() {
-        LogTrack.appendLog("清空主方法集合");
+        //LogTrack.appendLog("清空主方法集合");
         methodMainList.clear();
     }
 
@@ -56,7 +48,7 @@ public class InterceptStatus {
      * 清空主方法集合
      */
     public static void addMethodList(String typeMethod) {
-        LogTrack.appendLog("添加主方法集合==>>\t" + typeMethod);
+        //LogTrack.appendLog("添加主方法集合==>>\t" + typeMethod);
         methodMainList.add(typeMethod);
     }
 
@@ -70,7 +62,7 @@ public class InterceptStatus {
      * 清空主方法集合
      */
     public static void clearMethodParamList() {
-        LogTrack.appendLog("清空监控参数方法");
+        //LogTrack.appendLog("清空监控参数方法");
         methodParamList.clear();
     }
 
@@ -78,7 +70,7 @@ public class InterceptStatus {
      * 去除参数方法
      */
     public static void cancelMethodParamList(String typeMethod) {
-        LogTrack.appendLog("取消监控参数方法\t" + typeMethod);
+        //LogTrack.appendLog("取消监控参数方法\t" + typeMethod);
         methodParamList.remove(typeMethod);
     }
 
@@ -86,7 +78,7 @@ public class InterceptStatus {
      * 添加
      */
     public static void addMethodParamList(String typeMethod) {
-        LogTrack.appendLog("添加监控参数方法==>>\t" + typeMethod);
+        //LogTrack.appendLog("添加监控参数方法==>>\t" + typeMethod);
         methodParamList.add(typeMethod);
     }
 

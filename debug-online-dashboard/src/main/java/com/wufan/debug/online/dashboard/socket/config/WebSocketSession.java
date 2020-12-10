@@ -1,6 +1,6 @@
 package com.wufan.debug.online.dashboard.socket.config;
 
-import com.wufan.debug.online.dashboard.util.JsonUtils;
+import com.wufan.debug.online.utils.JsonUtils;
 import com.wufan.debug.online.domain.AgentCommand;
 import lombok.extern.slf4j.Slf4j;
 

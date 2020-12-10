@@ -26,21 +26,11 @@ import java.lang.instrument.Instrumentation;
  */
 public class DebugAgent {
 
-    public static String remoteHost = "preagent.jddj.com";
+    public static String remoteHost = "127.0.0.1:8080";
 
     //JVM 首先尝试在代理类上调用以下方法
     public static void premain(String agentArgs, Instrumentation inst) {
-        String regexp = null;
-        if (agentArgs != null && !agentArgs.equals("")) {
-            if (agentArgs.indexOf("&&") > 0) {
-                //设置正则
-                regexp = agentArgs.split("&&")[0];
-                //设置远程服务
-                remoteHost = agentArgs.split("&&")[1];
-            } else {
-                regexp = agentArgs;
-            }
-        }
+        String regexp = agentArgs;
         if (regexp == null) {
             LogTrack.appendLog("当前服务未配置扫描包数据");
             return;
@@ -48,7 +38,6 @@ public class DebugAgent {
 
         //清除日志文件
         LogTrack.removeLog();
-
 
         new Thread(() -> {
             //启动socket客户端
@@ -85,7 +74,7 @@ public class DebugAgent {
 
             @Override
             public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule, boolean b, DynamicType dynamicType) {
-                System.out.println("onTransformation PreMainAgent get loaded typeDescription:" + typeDescription.getCanonicalName());
+                LogTrack.appendLog("onTransformation PreMainAgent get loaded typeDescription:" + typeDescription.getCanonicalName());
 
                 MethodList<MethodDescription.InDefinedShape> declaredMethods = typeDescription.getDeclaredMethods();
                 declaredMethods.forEach(methodDescription -> {

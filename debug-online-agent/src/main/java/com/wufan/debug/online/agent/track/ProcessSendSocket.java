@@ -1,10 +1,7 @@
 package com.wufan.debug.online.agent.track;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.wufan.debug.online.agent.utils.LogTrack;
+import com.wufan.debug.online.utils.JsonUtils;
 import org.java_websocket.client.WebSocketClient;
 
 /**
@@ -20,20 +17,7 @@ import org.java_websocket.client.WebSocketClient;
 public class ProcessSendSocket {
 
 
-    private static ObjectMapper mapper = new ObjectMapper();
-
     private static WebSocketClient client;
-
-    static {
-        // 解决实体未包含字段反序列化时抛出异常
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // 对于空的对象转json的时候不抛出错误
-        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        // 允许属性名称没有引号
-        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        // 允许单引号
-        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-    }
 
 
     public static void toSocketJsonStr(ProcessAgent agent) {
@@ -48,8 +32,9 @@ public class ProcessSendSocket {
     }
 
     public static String toJsonString(ProcessAgent agent) {
+
         try {
-            return mapper.writeValueAsString(agent);
+            return JsonUtils.toJsonStr(agent);
         } catch (Exception e) {
             String message = "拦截器序列化异常" + e.getMessage();
             agent.setMessage(message);
@@ -60,19 +45,11 @@ public class ProcessSendSocket {
         }
     }
 
-    public static String toJsonString(Object object) {
-        try {
-            return mapper.writeValueAsString(object);
-        } catch (Exception e) {
-            LogTrack.appendLog("序列化异常" + e.getMessage());
-        }
-        return null;
-    }
 
     public static String toJsonErrorString(ProcessAgent agent) {
         String json = null;
         try {
-            json = mapper.writeValueAsString(agent);
+            json = JsonUtils.toJsonStr(agent);
         } catch (Exception e) {
             LogTrack.appendLog("序列化异常" + e.getMessage());
         }

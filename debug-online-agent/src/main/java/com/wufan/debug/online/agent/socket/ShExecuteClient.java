@@ -2,9 +2,12 @@ package com.wufan.debug.online.agent.socket;
 
 import com.wufan.debug.online.agent.DebugAgent;
 import com.wufan.debug.online.agent.plugin.InterceptStatus;
+import com.wufan.debug.online.agent.service.AgentCommandClientService;
 import com.wufan.debug.online.agent.track.ProcessSendSocket;
 import com.wufan.debug.online.agent.track.TrackContext;
 import com.wufan.debug.online.agent.utils.LogTrack;
+import com.wufan.debug.online.domain.AgentCommand;
+import com.wufan.debug.online.utils.JsonUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -86,34 +89,7 @@ public class ShExecuteClient {
                 @Override
                 public void onMessage(String command) {
                     try {
-                        LogTrack.appendLog("receive: " + command);
-                        if (!command.equals("")) {
-                            if (command.startsWith("start")) {
-                                InterceptStatus.setSwitch(true);
-                                LogTrack.appendLog("开启记录拦截 客户端" + url);
-                            }
-                            if (command.startsWith("end")) {
-                                InterceptStatus.setSwitch(false);
-                                LogTrack.appendLog("关闭记录拦截 客户端" + url);
-                            }
-                            if (command.startsWith("setAgentMethod")) {
-                                String value = command.split("=>")[1];
-                                InterceptStatus.addMethodList(value);
-                            }
-                            if (command.startsWith("removeAllMethod")) {
-                                InterceptStatus.clearMethodList();
-                            }
-                            //setAgentMonitor removeAgentMonitor
-                            if (command.startsWith("setAgentMonitor")) {
-                                String value = command.split("=>")[1];
-                                InterceptStatus.addMethodParamList(value);
-                            }
-                            if (command.startsWith("removeAgentMonitor")) {
-                                String value = command.split("=>")[1];
-                                InterceptStatus.cancelMethodParamList(value);
-                            }
-
-                        }
+                        AgentCommandClientService.executeCommand(JsonUtils.fromJson(command,AgentCommand.class));
                     } catch (Exception e) {
                         LogTrack.appendLog("处理命令失败" + command + "===》》异常" + e.getMessage());
                     }
@@ -121,7 +97,7 @@ public class ShExecuteClient {
 
                 @Override
                 public void onClose(int i, String s, boolean b) {
-                    LogTrack.appendLog("close 客户端" + url + "param1:" + i + "\tparam2" + s + "\tparam3" + b);
+                    LogTrack.appendLog("close 客户端" + url + "param1:" + i + "\tparam2:" + s + "\tparam3:" + b);
                     switchStatus.set(false);
                     //移除所有方法记录
                     TrackContext.clearRootTrack();

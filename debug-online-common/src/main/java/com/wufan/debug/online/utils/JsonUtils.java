@@ -1,25 +1,24 @@
-package com.wufan.debug.online.dashboard.util;
+package com.wufan.debug.online.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
 /**
  * 我本非凡
- * Date:2020-12-03
- * Time:14:12:36
+ * Date:2020-12-10
+ * Time:11:12:59
  * Description:JsonUtils.java
  *
  * @author wufan02
  * @since JDK 1.8
  * Enjoy a grander sight By climbing to a greater height
  */
-@Slf4j
 public class JsonUtils {
 
 
@@ -29,11 +28,13 @@ public class JsonUtils {
         // 解决实体未包含字段反序列化时抛出异常
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // 对于空的对象转json的时候不抛出错误
-        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        //mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         // 允许属性名称没有引号
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         // 允许单引号
         mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
 
@@ -43,7 +44,7 @@ public class JsonUtils {
             asString = mapper.writeValueAsString(o);
             return asString;
         } catch (JsonProcessingException e) {
-            log.error("序列化失败", e);
+            //log.error("序列化失败", e);
             throw new RuntimeException("序列化失败", e);
         }
     }
@@ -55,7 +56,7 @@ public class JsonUtils {
             t = mapper.readValue(str, clazz);
             return t;
         } catch (IOException e) {
-            log.error("序列化失败", e);
+            //log.error("序列化失败", e);
             throw new RuntimeException("序列化失败", e);
         }
     }

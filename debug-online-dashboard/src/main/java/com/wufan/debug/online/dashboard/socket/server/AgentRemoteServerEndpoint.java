@@ -3,13 +3,13 @@ package com.wufan.debug.online.dashboard.socket.server;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
 import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.dashboard.util.JsonUtils;
+import com.wufan.debug.online.utils.JsonUtils;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -38,9 +38,14 @@ public class AgentRemoteServerEndpoint {
 
     public static Map<String, Map<String, List<ProcessAgent>>> userText = new ConcurrentHashMap<>();
 
+    private static AgentCommandServerService agentCommandServerService;
 
-    @Resource
-    private AgentCommandServerService agentCommandServerService;
+    /*单例注入 由于AgentRemoteServerEndpoint 非单例 每次初始化会丢点service*/
+    @Autowired
+    public void setCommandService(AgentCommandServerService agentCommandServerService){
+        AgentRemoteServerEndpoint.agentCommandServerService =agentCommandServerService;
+    }
+
     /**
      * 前端一旦启用WebSocket,机会调用@OnOpen注解标注的方法
      *

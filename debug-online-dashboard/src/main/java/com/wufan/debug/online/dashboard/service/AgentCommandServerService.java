@@ -1,7 +1,6 @@
 package com.wufan.debug.online.dashboard.service;
 
 import com.wufan.debug.online.domain.AgentCommand;
-import org.springframework.stereotype.Component;
 
 /**
  * 我本非凡
@@ -15,9 +14,9 @@ import org.springframework.stereotype.Component;
  */
 public interface AgentCommandServerService {
 
-
     /**
      * 执行脚本
+     *
      * @param agentCommand
      */
     public void executeCommand(AgentCommand agentCommand);

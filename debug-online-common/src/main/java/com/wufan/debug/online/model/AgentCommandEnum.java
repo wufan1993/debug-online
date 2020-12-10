@@ -2,6 +2,7 @@ package com.wufan.debug.online.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * 我本非凡
@@ -25,7 +26,6 @@ public enum AgentCommandEnum {
     ADD_METHOD("addMethod", "server", "添加方法"),
 
     CLEAR_MONITOR_METHOD("clearAgentMethod", "dashboard", "清空监控参数方法"),
-
     ADD_MONITOR_METHOD("addAgentMethod", "dashboard", "添加监控参数方法"),
     REMOVE_MONITOR_METHOD("removeAgentMethod", "dashboard", "移除监控参数方法"),
 
@@ -40,6 +40,8 @@ public enum AgentCommandEnum {
     private String dignity;
 
     private String desc;
+
+    private Consumer<String> consumer;
 
     AgentCommandEnum(String command, String dignity, String desc) {
         this.dignity = dignity;
@@ -58,5 +60,21 @@ public enum AgentCommandEnum {
 
     public static AgentCommandEnum getEnumByCommand(String command) {
         return map.get(command);
+    }
+
+    public void setConsumer(Consumer<String> consumer) {
+        this.consumer = consumer;
+    }
+
+    public void executeCommand(String content){
+        consumer.accept(content);
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }

@@ -5,7 +5,7 @@ import com.wufan.debug.online.dashboard.dao.MethodMapper;
 import com.wufan.debug.online.dashboard.domain.MethodInfo;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.dashboard.util.JsonUtils;
+import com.wufan.debug.online.utils.JsonUtils;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,7 @@ public class AgentCommandServerServiceImpl implements AgentCommandServerService 
         WebSocketSession.AGENT_CLIENT.sendText(ip,clearCommand);
         //开始添加方法
         methodInfoList.forEach(methodInfo -> {
-            AgentCommand addMethod=new AgentCommand(AgentCommandEnum.ADD_METHOD,JsonUtils.toJsonStr(methodInfo));
+            AgentCommand addMethod=new AgentCommand(AgentCommandEnum.ADD_METHOD,methodInfo.getTypeName()+"#"+methodInfo.getMethodName());
             WebSocketSession.AGENT_CLIENT.sendText(ip, addMethod);
         });
     }

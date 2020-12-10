@@ -13,16 +13,12 @@ import org.springframework.stereotype.Component;
  * @since JDK 1.8
  * Enjoy a grander sight By climbing to a greater height
  */
-@Component
-public class AgentCommandDashboardService {
+public interface AgentCommandDashboardService {
 
 
     /**
      * 执行脚本
      * @param agentCommand
      */
-    public void executeCommand(AgentCommand agentCommand){
-
-
-    }
+    public void executeCommand(AgentCommand agentCommand);
 }
