@@ -21,7 +21,7 @@ public class InterceptStatus {
     /**
      * 主方法集合
      */
-    protected static Set<String> methodMainList = new HashSet<>();
+    //protected static Set<String> methodMainList = new HashSet<>();
 
     protected static AtomicBoolean switchOff = new AtomicBoolean(false);
 
@@ -45,7 +45,7 @@ public class InterceptStatus {
      */
     public static void clearMethodList() {
         //LogTrack.appendLog("清空主方法集合");
-        methodMainList.clear();
+        methodRef.clear();
     }
 
     /**
@@ -60,7 +60,10 @@ public class InterceptStatus {
     public static boolean containMethodList(String typeMethod) {
 
         //return TrackContext.getRootId()==null;
-        return methodMainList.contains(typeMethod);
+        if(methodRef.containsKey(typeMethod)){
+            return methodRef.get(typeMethod)==null;
+        }
+        return false;
     }
 
     /**

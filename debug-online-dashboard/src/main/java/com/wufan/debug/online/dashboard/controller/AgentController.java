@@ -106,7 +106,7 @@ public class AgentController {
                 processAgents = stringListMap.get(rootId);
                 processAgents.forEach(processAgent -> {
                     //debugPort
-                    if (processAgent.getPid() == 0) {
+                    if (processAgent.getPid().intValue() == processAgent.getId()) {
                         processAgent.setPid(-1);
                     }
                     String typeMethod = processAgent.getTypeName() + "#" + processAgent.getMethod();

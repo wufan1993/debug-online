@@ -1,5 +1,8 @@
 package com.wufan.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 我本非凡
  * Date:2020-12-04
@@ -26,6 +29,11 @@ public class TestException {
 
     private void testExe4(int i) {
         System.out.println(i);
+
+        new Thread(() -> {
+            testThreadExe1(i+1000);
+        }).start();
+
     }
 
     private void testExe3(int i) {
@@ -51,5 +59,16 @@ public class TestException {
         testExe2(i);
         testExe3(i);
         testExe4(i);
+    }
+
+    private void testThreadExe1(int i) {
+        System.out.println(i);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        testExe2(i);
+        testExe3(i);
     }
 }

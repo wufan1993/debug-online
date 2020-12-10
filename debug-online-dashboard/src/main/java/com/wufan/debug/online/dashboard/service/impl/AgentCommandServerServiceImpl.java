@@ -70,7 +70,7 @@ public class AgentCommandServerServiceImpl implements AgentCommandServerService 
             WebSocketSession.AGENT_CLIENT.sendText(ip, addMethod);
             //添加子方法
             methodStack.getChildTypeMethod().forEach(childStack->{
-                String childContent=mainContent+","+childStack;
+                String childContent=childStack+","+mainContent;
                 AgentCommand childMethod = new AgentCommand(AgentCommandEnum.ADD_METHOD, childContent);
                 WebSocketSession.AGENT_CLIENT.sendText(ip, childMethod);
             });

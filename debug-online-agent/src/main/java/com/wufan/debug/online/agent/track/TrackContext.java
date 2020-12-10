@@ -3,6 +3,7 @@ package com.wufan.debug.online.agent.track;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -27,7 +28,7 @@ public class TrackContext {
 
     private static final ThreadLocal<Integer> trackExtend = new ThreadLocal<>();
 
-    private static Map<String,String> rootMethod=new HashMap<>();
+    private static Map<String,String> rootMethod=new ConcurrentHashMap<>();
 
     //主方法依赖关系 key:主方法/子方法 value:父方法
     //private static Map<String,String> mainMethodRef=new HashMap<>();
@@ -122,7 +123,6 @@ public class TrackContext {
     }
 
     public static void removeCacheId() {
-        TrackContext.removeRootMethodTrack(TrackContext.getRootId());
         TrackContext.clearRootId();
         TrackContext.clearParentId();
         TrackContext.clearExtendId();

@@ -32,6 +32,8 @@ public class MethodIntercept {
             //是否总方法标志
             Boolean flag = false;
 
+            Boolean childFlag = false;
+
             //如果是主方法进入 那么强制设置一个新的rootId
             String typeMethod = method.getDeclaringClass().getName() + "#" + method.getName();
 
@@ -41,13 +43,14 @@ public class MethodIntercept {
                 flag = true;
             }
 
-            if(!flag){
+            if(TrackContext.getRootId() == null){
                 //判断是不是关联子方法
                 String rootMethod=InterceptStatus.getParentMethodList(typeMethod);
                 if(rootMethod!=null){
                     String rootMethodId = TrackContext.getRootMethodId(rootMethod);
                     if (rootMethodId != null) {
                         TrackContext.setRootId(rootMethodId);
+                        childFlag=true;
                     }
                 }
             }
@@ -59,7 +62,7 @@ public class MethodIntercept {
 
             //防止出现相同的方法
             Integer methodId = NumberIncrease.getTagId(TrackContext.getRootId());
-            if (flag) {
+            if (flag || childFlag) {
                 //设置方法内的 本地ID
                 TrackContext.setParentId(methodId);
             }
@@ -114,9 +117,12 @@ public class MethodIntercept {
                 ProcessSendSocket.toSocketJsonStr(processError);
                 throw e;
             } finally {
-                TrackContext.removeStaticRootMethod(typeMethod);
                 TrackContext.setExtendId(oldExtendId);
                 if (flag) {
+                    TrackContext.removeStaticRootMethod(typeMethod);
+                    TrackContext.removeRootMethodTrack(TrackContext.getRootId());
+                }
+                if(flag || childFlag){
                     TrackContext.removeCacheId();
                 }
             }
