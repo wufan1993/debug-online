@@ -3,7 +3,7 @@ package com.wufan.debug.online.dashboard.controller;
 import com.wufan.debug.online.dashboard.socket.config.AgentList;
 import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.dashboard.socket.server.AgentClientServerEndpoint;
+import com.wufan.debug.online.dashboard.socket.server.AgentDashboardServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
 import com.wufan.debug.online.dashboard.util.PackRes;
 import lombok.extern.slf4j.Slf4j;
@@ -45,14 +45,14 @@ public class AgentController {
         //开启监听并获取数据
         /*AgentRemoteServerEndpoint.userText.computeIfAbsent(username,k->{
             //给远程端口发送开启发送命令
-            WebSocketSession.AGENT_REMOTE.sendText(username, "start");
+            WebSocketSession.AGENT_CLIENT.sendText(username, "start");
             return new HashMap<>();
         });*/
         model.addAttribute("agentHost", agentHost);
         AgentRemoteServerEndpoint.userText.put(username, new HashMap<>());
 
         //如果当前存在会话，那么关闭之前的会话
-        if (WebSocketSession.AGENT_CLIENT.getLivingSessions().containsKey(username)) {
+        if (WebSocketSession.AGENT_DASHBOARD.getLivingSessions().containsKey(username)) {
             model.addAttribute("message", "当前会话已存在，无法新建会话连接");
             return "/modules/agent/pages-error.html";
         }
@@ -110,7 +110,7 @@ public class AgentController {
                         processAgent.setPid(-1);
                     }
                     String typeMethod = processAgent.getTypeName() + "#" + processAgent.getMethod();
-                    if ((AgentClientServerEndpoint.userMethodMap.get(username).contains(typeMethod))) {
+                    if ((AgentDashboardServerEndpoint.userMethodMap.get(username).contains(typeMethod))) {
                         processAgent.setDebugPort(true);
                     }
                 });

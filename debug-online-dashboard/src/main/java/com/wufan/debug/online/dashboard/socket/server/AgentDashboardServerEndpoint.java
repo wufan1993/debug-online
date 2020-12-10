@@ -1,6 +1,8 @@
 package com.wufan.debug.online.dashboard.socket.server;
 
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
+import com.wufan.debug.online.domain.AgentCommand;
+import com.wufan.debug.online.model.AgentCommandEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @ServerEndpoint("/socket/agentClient/{username}")
 @Slf4j
-public class AgentClientServerEndpoint {
+public class AgentDashboardServerEndpoint {
 
     public static Map<String, List<String>> userMethodMap = new ConcurrentHashMap<>();
 
@@ -42,7 +44,7 @@ public class AgentClientServerEndpoint {
     public void openSession(@PathParam("username") String username, Session session) {
         //this.suffix="client";
         //添加前段session 后缀是client
-        WebSocketSession.AGENT_CLIENT.putSession(username, session);
+        WebSocketSession.AGENT_DASHBOARD.putSession(username, session);
         log.info("当前连接以建立AGENT_CLIENT" + username);
         userMethodMap.put(username, new ArrayList<>());
         //sendTextAll("欢迎用户【" + username + "】来到狼窝！");
@@ -70,12 +72,12 @@ public class AgentClientServerEndpoint {
     public void onClose(@PathParam("username") String username) {
         //将当前用户移除
         log.info("当前连接以移除AGENT_CLIENT" + username);
-        WebSocketSession.AGENT_CLIENT.removeSession(username);
+        WebSocketSession.AGENT_DASHBOARD.removeSession(username);
         //AgentRemoteServerEndpoint.userText.remove(username);
         //给所有存活的用户发送消息
         //sendTextAll("用户【" + username + "】离开狼窝！");
         //给远程端口发送开启发送命令
-        WebSocketSession.AGENT_REMOTE.sendText(username, "end");
+        WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.CLOSE_CLIENT));
         log.info("关闭客户端开启参数拦截" + username);
     }
 

@@ -22,6 +22,16 @@ public class AgentCommand {
         return commandEnum;
     }
 
+
+    public AgentCommand(AgentCommandEnum commandEnum) {
+        this.commandEnum = commandEnum;
+    }
+
+    public AgentCommand(AgentCommandEnum commandEnum, String content) {
+        this.commandEnum = commandEnum;
+        this.content = content;
+    }
+
     public void setCommandEnum(AgentCommandEnum commandEnum) {
         this.commandEnum = commandEnum;
     }

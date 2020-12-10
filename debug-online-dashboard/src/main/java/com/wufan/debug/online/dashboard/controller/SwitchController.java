@@ -1,15 +1,16 @@
 package com.wufan.debug.online.dashboard.controller;
 
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.dashboard.socket.server.AgentClientServerEndpoint;
+import com.wufan.debug.online.dashboard.socket.server.AgentDashboardServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
+import com.wufan.debug.online.domain.AgentCommand;
+import com.wufan.debug.online.model.AgentCommandEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -34,13 +35,14 @@ public class SwitchController {
         String typeMethod = typeName + "#" + method;
         if (status) {
             //开启
-            log.info("当前连接以建立AGENT_CLIENT" + username);
-            WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMonitor=>" + typeMethod);
-            AgentClientServerEndpoint.userMethodMap.get(username).add(typeMethod);
+            log.info("开启IP方法断点{} {}",username,typeMethod);
+            WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.ADD_MONITOR_METHOD,typeMethod));
+            AgentDashboardServerEndpoint.userMethodMap.get(username).add(typeMethod);
         } else {
+            log.info("关闭IP方法断点{} {}",username,typeMethod);
             //给远程端口发送开启发送命令
-            WebSocketSession.AGENT_REMOTE.sendText(username, "removeAgentMonitor=>" + typeMethod);
-            AgentClientServerEndpoint.userMethodMap.get(username).remove(typeMethod);
+            WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.REMOVE_MONITOR_METHOD,typeMethod));
+            AgentDashboardServerEndpoint.userMethodMap.get(username).remove(typeMethod);
         }
         return "成功";
     }
@@ -55,14 +57,14 @@ public class SwitchController {
             try {
                 //AgentRemoteServerEndpoint.userText.put(username, new HashMap<>());
                 //给远程端口发送开启发送命令
-                WebSocketSession.AGENT_REMOTE.sendText(username, "start");
+                WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.OPEN_CLIENT));
                 log.info("启动客户端开启参数拦截" + username);
             } catch (Error e) {
                 log.error("启动客户端开启参数拦截失败", e);
             }
         } else {
             //给远程端口发送开启发送命令
-            WebSocketSession.AGENT_REMOTE.sendText(username, "end");
+            WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.CLOSE_CLIENT));
 
             //将当前用户移除
             log.info("当前连接以移除AGENT_CLIENT" + username);
@@ -83,20 +85,20 @@ public class SwitchController {
         return "清空数据完成";
     }
 
-    @GetMapping("/sentMainMethod")
+    /*@GetMapping("/sentMainMethod")
     @ResponseBody
     public String sentMainMethod(String username, String value) {
 
         String[] split = value.split("\n");
         if (split.length > 0) {
-            WebSocketSession.AGENT_REMOTE.sendText(username, "removeAllMethod");
+            WebSocketSession.AGENT_CLIENT.sendText(username, "removeAllMethod");
             Arrays.stream(split).forEach(method -> {
                 if (method.contains("#")) {
                     //把它发送给监控端
-                    WebSocketSession.AGENT_REMOTE.sendText(username, "setAgentMethod=>" + method);
+                    WebSocketSession.AGENT_CLIENT.sendText(username, "setAgentMethod=>" + method);
                 }
             });
         }
         return "添加主方法数据完成";
-    }
+    }*/
 }

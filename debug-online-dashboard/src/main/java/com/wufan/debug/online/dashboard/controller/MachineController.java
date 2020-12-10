@@ -52,7 +52,7 @@ public class MachineController extends BaseController {
     public Map<String, Object> listMachine() {
 
         List<MachineInfo> machineInfoList = machineMapper.selectList(new QueryWrapper<>());
-        final Map<String, Session> livingSessions = WebSocketSession.AGENT_REMOTE.getLivingSessions();
+        final Map<String, Session> livingSessions = WebSocketSession.AGENT_CLIENT.getLivingSessions();
 
         machineInfoList.forEach(machineInfo -> {
             machineInfo.setPid(-1L);

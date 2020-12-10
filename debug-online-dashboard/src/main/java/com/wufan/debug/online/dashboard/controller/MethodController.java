@@ -3,6 +3,7 @@ package com.wufan.debug.online.dashboard.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wufan.debug.online.dashboard.dao.MethodMapper;
 import com.wufan.debug.online.dashboard.domain.MethodInfo;
+import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
 import com.wufan.debug.online.dashboard.util.PackRes;
@@ -38,6 +39,9 @@ public class MethodController extends BaseController{
     @Resource
     private MethodMapper methodMapper;
 
+    @Resource
+    private AgentCommandServerService agentCommandServerService;
+
     @GetMapping("/enterMethodList")
     public String listMethod(Model model, String ip) {
         model.addAttribute("ip", ip);
@@ -54,6 +58,8 @@ public class MethodController extends BaseController{
             }
             boolean res = saveEntity(methodMapper, methodInfo, () -> methodMapper.getMaxId() + 1);
             if (res) {
+                //发送机器同步命令 //todo
+                agentCommandServerService.flushAllMethodInfo(methodInfo.getIp());
                 return "ok";
             }
         }

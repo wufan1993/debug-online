@@ -16,7 +16,24 @@ import java.util.Map;
 public enum AgentCommandEnum {
 
 
-    OPEN_CLIENT("open", "client", "启动客户端");
+
+    /*=========server端枚举=============*/
+    OPEN_CLIENT("openClient", "server", "启动监控"),
+    CLOSE_CLIENT("closeClient", "server", "关闭监控"),
+
+    CLEAR_METHOD("clearMethod", "server", "清空方法"),
+    ADD_METHOD("addMethod", "server", "添加方法"),
+
+    CLEAR_MONITOR_METHOD("clearAgentMethod", "dashboard", "清空监控参数方法"),
+
+    ADD_MONITOR_METHOD("addAgentMethod", "dashboard", "添加监控参数方法"),
+    REMOVE_MONITOR_METHOD("removeAgentMethod", "dashboard", "移除监控参数方法"),
+
+
+    /*=========dashboard端枚举=============*/
+    MONITOR_METHOD("monitorMethod", "dashboard", "监控方法"),
+
+    ;
 
     private String command;
 

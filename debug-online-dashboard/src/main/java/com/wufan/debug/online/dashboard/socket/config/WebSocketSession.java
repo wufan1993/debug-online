@@ -1,5 +1,7 @@
 package com.wufan.debug.online.dashboard.socket.config;
 
+import com.wufan.debug.online.dashboard.util.JsonUtils;
+import com.wufan.debug.online.domain.AgentCommand;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.websocket.RemoteEndpoint;
@@ -21,9 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class WebSocketSession {
 
-    public static LivingSession AGENT_CLIENT = new LivingSession();
+    public static LivingSession AGENT_DASHBOARD = new LivingSession();
 
-    public static LivingSession AGENT_REMOTE = new LivingSession();
+    public static LivingSession AGENT_CLIENT = new LivingSession();
 
 
     public static class LivingSession {
@@ -81,12 +83,12 @@ public class WebSocketSession {
         /**
          * 向指定Session(用户)发送message
          */
-        public void sendText(String username, String message) {
+        public void sendText(String username, AgentCommand command) {
 
             final Session session = livingSessions.get(getSessionKey(username));
             //发送消息对象
             if (session != null) {
-                sendText(session, message);
+                sendText(session, JsonUtils.toJsonStr(command));
             } else {
                 log.error("执行脚本数据==>>>" + username + "message===>>" + "当前会话不存在");
             }
