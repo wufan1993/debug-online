@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * 我本非凡
@@ -39,6 +40,7 @@ public class AgentRemoteServerEndpoint {
     public static Map<String, Map<String, List<ProcessAgent>>> userText = new ConcurrentHashMap<>();
 
     private static AgentCommandServerService agentCommandServerService;
+
 
     /*单例注入 由于AgentRemoteServerEndpoint 非单例 每次初始化会丢点service*/
     @Autowired
@@ -85,39 +87,63 @@ public class AgentRemoteServerEndpoint {
         //把脚本执行的返回结果 发给前端页面
         //log.info("返回脚本执行结果" + username + "===>>>" + message);
         //WebSocketSession.AGENT_DASHBOARD.sendText(username, message);
+        AgentCommand command = JsonUtils.fromJson(message, AgentCommand.class);
+        AgentCommandEnum commandEnum=AgentCommandEnum.getEnumByCommand(command.getCommand());
+        //如果是发送数据
+        if(commandEnum==AgentCommandEnum.METHOD_DATA){
+            dealWithClientData(commandEnum,username);
+        }
+        //如果是获取配置信息
+        if(commandEnum==AgentCommandEnum.CLIENT_CONFIG){
+            log.info("获取客户端连接正则数据==>>" + username + "===>>>" + message);
+            //WebSocketSession.AGENT_DASHBOARD.sendText(username, message);
+            commandEnum.setConsumer((s)->{
+                String regexp=agentCommandServerService.getClientRegexp(username);
+                if(regexp!=null){
+                    AgentCommand agentCommand=new AgentCommand(AgentCommandEnum.CLIENT_REGEXP,regexp);
+                    WebSocketSession.AGENT_CLIENT.sendText(username, agentCommand);
+                }
+            });
+        }
+        commandEnum.executeCommand(command.getContent());
+    }
 
-        ProcessAgent agent = JsonUtils.fromJson(message, ProcessAgent.class);
-        if (agent.getRootId() != null && userText.containsKey(username)) {
-            Map<String, List<ProcessAgent>> stringListMap = userText.get(username);
-            List<ProcessAgent> processAgents = stringListMap.computeIfAbsent(agent.getRootId(), k -> new ArrayList<>());
-            //发送给前段页面通知
-            if (agent.getPid() == 0 && agent.getId() == 0 && agent.getType() == 0) {
-                AgentCommand messageCommand=new AgentCommand(AgentCommandEnum.MONITOR_METHOD,message);
-                WebSocketSession.AGENT_DASHBOARD.sendText(username, messageCommand);
-                //todo
-                //log.info("开始拦截首次数据" + username + "===>>>" + message);
-                processAgents.add(agent);
-            } else if (processAgents.size() > 0) {
-                //如果集合不存在数据 进来的数据也不符合标准 那么 说明是残缺数据 需要全部丢弃
-                //其它类型进行数据合并
-                //如参方法放入队列中
-                if (agent.getType() == 0) {
+
+
+    private void dealWithClientData(AgentCommandEnum agentCommandEnum,@PathParam("username") String username) {
+        agentCommandEnum.setConsumer(message -> {
+            ProcessAgent agent = JsonUtils.fromJson(message, ProcessAgent.class);
+            if (agent.getRootId() != null && userText.containsKey(username)) {
+                Map<String, List<ProcessAgent>> stringListMap = userText.get(username);
+                List<ProcessAgent> processAgents = stringListMap.computeIfAbsent(agent.getRootId(), k -> new ArrayList<>());
+                //发送给前段页面通知
+                if (agent.getPid() == 0 && agent.getId() == 0 && agent.getType() == 0) {
+                    AgentCommand messageCommand=new AgentCommand(AgentCommandEnum.MONITOR_METHOD,message);
+                    WebSocketSession.AGENT_DASHBOARD.sendText(username, messageCommand);
+                    //todo
+                    //log.info("开始拦截首次数据" + username + "===>>>" + message);
                     processAgents.add(agent);
-                } else {
-                    for (ProcessAgent ar : processAgents) {
-                        String cp = ar.getId() + "" + ar.getPid();
-                        String np = agent.getId() + "" + agent.getPid();
-                        if (cp.equals(np)) {
-                            ar.setRes(agent.getRes());
-                            ar.setMessage(agent.getMessage());
-                            ar.setCostTime(agent.getCostTime());
-                            break;
+                } else if (processAgents.size() > 0) {
+                    //如果集合不存在数据 进来的数据也不符合标准 那么 说明是残缺数据 需要全部丢弃
+                    //其它类型进行数据合并
+                    //如参方法放入队列中
+                    if (agent.getType() == 0) {
+                        processAgents.add(agent);
+                    } else {
+                        for (ProcessAgent ar : processAgents) {
+                            String cp = ar.getId() + "" + ar.getPid();
+                            String np = agent.getId() + "" + agent.getPid();
+                            if (cp.equals(np)) {
+                                ar.setRes(agent.getRes());
+                                ar.setMessage(agent.getMessage());
+                                ar.setCostTime(agent.getCostTime());
+                                break;
+                            }
                         }
                     }
                 }
             }
-
-        }
+        });
     }
 
     /**

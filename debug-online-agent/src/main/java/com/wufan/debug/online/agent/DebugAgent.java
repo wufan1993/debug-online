@@ -28,10 +28,12 @@ public class DebugAgent {
 
     public static String remoteHost = "127.0.0.1:8080";
 
+    public static String packagePrefix;
+
     //JVM 首先尝试在代理类上调用以下方法
     public static void premain(String agentArgs, Instrumentation inst) {
-        String regexp = null;
-        if (agentArgs != null && !agentArgs.equals("")) {
+        remoteHost = agentArgs;
+        /*if (agentArgs != null && !agentArgs.equals("")) {
             if (agentArgs.indexOf("&&") > 0) {
                 //设置正则
                 regexp = agentArgs.split("&&")[0];
@@ -40,11 +42,7 @@ public class DebugAgent {
             } else {
                 regexp = agentArgs;
             }
-        }
-        if (regexp == null) {
-            LogTrack.appendLog("当前服务未配置扫描包数据");
-            return;
-        }
+        }*/
 
         //清除日志文件
         LogTrack.removeLog();
@@ -59,10 +57,20 @@ public class DebugAgent {
             }
         }).start();
 
-        LogTrack.appendLog("this is my agent：" + regexp);
-        
+        //暂停 5 秒 钟
+        try {
+            LogTrack.appendLog("暂停5秒钟 等候socket连接....");
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (packagePrefix == null) {
+            LogTrack.appendLog("未获取到服务配置信息,监控系统未建立");
+            return;
+        }
+        LogTrack.appendLog("this is my agent：" + packagePrefix);
+
         //抽象类不拦截 静态方法不拦截
-        String packagePrefix = regexp;
 
         AgentBuilder.Transformer transformer = (builder, typeDescription, classLoader, javaModule) -> {
             DynamicType.Builder.MethodDefinition.ImplementationDefinition<?> main = builder

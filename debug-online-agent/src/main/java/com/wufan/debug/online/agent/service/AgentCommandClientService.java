@@ -1,5 +1,6 @@
 package com.wufan.debug.online.agent.service;
 
+import com.wufan.debug.online.agent.DebugAgent;
 import com.wufan.debug.online.agent.plugin.InterceptStatus;
 import com.wufan.debug.online.agent.track.TrackContext;
 import com.wufan.debug.online.agent.utils.LogTrack;
@@ -48,6 +49,8 @@ public class AgentCommandClientService {
 
         AgentCommandEnum.CLEAR_MONITOR_METHOD.setConsumer(command -> InterceptStatus.clearMethodParamList());
 
+        AgentCommandEnum.CLIENT_REGEXP.setConsumer(command -> DebugAgent.packagePrefix = command);
+
     }
 
     /**
@@ -57,7 +60,7 @@ public class AgentCommandClientService {
      */
     public static void executeCommand(AgentCommand agentCommand) {
         AgentCommandEnum enumByCommand = AgentCommandEnum.getEnumByCommand(agentCommand.getCommand());
-        LogTrack.appendLog(String.format("操作=>%s\t命令%s\t数据:%s", enumByCommand.getDesc(), enumByCommand.getCommand(), agentCommand.getContent()));
+        LogTrack.appendLog(String.format("操作=>%s\t命令=>%s\t数据:%s", enumByCommand.getDesc(), enumByCommand.getCommand(), agentCommand.getContent()));
         enumByCommand.executeCommand(agentCommand.getContent());
     }
 }

@@ -1,6 +1,8 @@
 package com.wufan.debug.online.agent.track;
 
 import com.wufan.debug.online.agent.utils.LogTrack;
+import com.wufan.debug.online.domain.AgentCommand;
+import com.wufan.debug.online.model.AgentCommandEnum;
 import com.wufan.debug.online.utils.JsonUtils;
 import org.java_websocket.client.WebSocketClient;
 
@@ -25,7 +27,8 @@ public class ProcessSendSocket {
         if (client != null && client.isOpen()) {
             String string = toJsonString(agent);
             if (string != null) {
-                client.send(string);
+                AgentCommand agentCommand=new AgentCommand(AgentCommandEnum.METHOD_DATA,string);
+                client.send(JsonUtils.toJsonStr(agentCommand));
                 //LogTrack.appendLog(string);
             }
         }
@@ -64,5 +67,13 @@ public class ProcessSendSocket {
 
     public static WebSocketClient getClient() {
         return client;
+    }
+
+    /**
+     * 客户端发送命令
+     * @param agentCommand
+     */
+    public static void sentAgentCommand(AgentCommand agentCommand) {
+        client.send(JsonUtils.toJsonStr(agentCommand));
     }
 }

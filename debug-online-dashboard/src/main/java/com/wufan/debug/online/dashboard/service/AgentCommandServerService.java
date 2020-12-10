@@ -22,4 +22,6 @@ public interface AgentCommandServerService {
     public void executeCommand(AgentCommand agentCommand);
 
     public void flushAllMethodInfo(String ip);
+
+    String getClientRegexp(String username);
 }

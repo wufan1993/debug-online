@@ -1,7 +1,7 @@
 DELETE FROM machine_info;
 
-INSERT INTO machine_info (id,ip, name,desc) VALUES
-  (1,'192.168.80.65', 'debug-online-dashboard', '本地测试机器');
+INSERT INTO machine_info (id,ip, name,desc,regexp) VALUES
+  (1,'192.168.80.65', 'debug-online-dashboard', '本地测试机器','com.wufan.test.*');
 
 DELETE FROM method_info;
 

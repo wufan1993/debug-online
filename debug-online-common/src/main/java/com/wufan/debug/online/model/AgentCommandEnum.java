@@ -17,8 +17,13 @@ import java.util.function.Consumer;
 public enum AgentCommandEnum {
 
 
+    /*=========client端枚举=============*/
+    CLIENT_CONFIG("clientConfig", "client", "获取客户端配置数据"),
+    METHOD_DATA("methodData", "client", "发送数据"),
 
     /*=========server端枚举=============*/
+    CLIENT_REGEXP("clientRegexp", "server", "客户端正则匹配"),
+
     OPEN_CLIENT("openClient", "server", "启动监控"),
     CLOSE_CLIENT("closeClient", "server", "关闭监控"),
 

@@ -7,6 +7,7 @@ import com.wufan.debug.online.agent.track.ProcessSendSocket;
 import com.wufan.debug.online.agent.track.TrackContext;
 import com.wufan.debug.online.agent.utils.LogTrack;
 import com.wufan.debug.online.domain.AgentCommand;
+import com.wufan.debug.online.model.AgentCommandEnum;
 import com.wufan.debug.online.utils.JsonUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -84,6 +85,8 @@ public class ShExecuteClient {
                     switchStatus.set(true);
                     //移除所有方法记录
                     TrackContext.clearRootTrack();
+                    AgentCommand agentCommand=new AgentCommand(AgentCommandEnum.CLIENT_CONFIG);
+                    ProcessSendSocket.sentAgentCommand(agentCommand);
                 }
 
                 @Override

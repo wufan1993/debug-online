@@ -1,7 +1,9 @@
 package com.wufan.debug.online.dashboard.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wufan.debug.online.dashboard.dao.MachineMapper;
 import com.wufan.debug.online.dashboard.dao.MethodMapper;
+import com.wufan.debug.online.dashboard.domain.MachineInfo;
 import com.wufan.debug.online.dashboard.domain.MethodInfo;
 import com.wufan.debug.online.dashboard.domain.MethodStack;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
@@ -9,6 +11,7 @@ import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -31,6 +34,9 @@ public class AgentCommandServerServiceImpl implements AgentCommandServerService 
 
     @Resource
     private MethodMapper methodMapper;
+
+    @Resource
+    private MachineMapper machineMapper;
 
     @Override
     public void executeCommand(AgentCommand agentCommand) {
@@ -75,5 +81,16 @@ public class AgentCommandServerServiceImpl implements AgentCommandServerService 
                 WebSocketSession.AGENT_CLIENT.sendText(ip, childMethod);
             });
         });
+    }
+
+    @Override
+    public String getClientRegexp(String username) {
+        QueryWrapper<MachineInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("ip", username);
+        List<MachineInfo> machineInfos = machineMapper.selectList(queryWrapper);
+        if(machineInfos!=null && machineInfos.size()>0){
+            return machineInfos.get(0).getRegexp();
+        }
+        return null;
     }
 }
