@@ -135,7 +135,9 @@ public class AgentRemoteServerEndpoint {
                             String np = agent.getId() + "" + agent.getPid();
                             if (cp.equals(np)) {
                                 ar.setRes(agent.getRes());
-                                ar.setMessage(agent.getMessage());
+                                if(agent.getMessage()!=null){
+                                    ar.setMessage(agent.getMessage());
+                                }
                                 ar.setCostTime(agent.getCostTime());
                                 break;
                             }

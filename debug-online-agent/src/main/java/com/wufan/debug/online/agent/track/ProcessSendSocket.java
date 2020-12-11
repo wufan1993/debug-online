@@ -26,8 +26,9 @@ public class ProcessSendSocket {
 
         if (client != null && client.isOpen()) {
             String string = toJsonString(agent);
+
             if (string != null) {
-                AgentCommand agentCommand=new AgentCommand(AgentCommandEnum.METHOD_DATA,string);
+                AgentCommand agentCommand = new AgentCommand(AgentCommandEnum.METHOD_DATA, string);
                 client.send(JsonUtils.toJsonStr(agentCommand));
                 //LogTrack.appendLog(string);
             }
@@ -37,9 +38,15 @@ public class ProcessSendSocket {
     public static String toJsonString(ProcessAgent agent) {
 
         try {
-            return JsonUtils.toJsonStr(agent);
+            String str = JsonUtils.toJsonStr(agent);
+            long length = str.length();
+            if (length > 4460256) {
+                throw new RuntimeException("序列化长度过长 长度:" + length);
+            }
+            return str;
         } catch (Exception e) {
             String message = "拦截器序列化异常" + e.getMessage();
+            LogTrack.appendLog(message);
             agent.setMessage(message);
             //设置入参数 出参数都为空 这两个会出现序列化异常
             agent.setArgs(null);
@@ -71,6 +78,7 @@ public class ProcessSendSocket {
 
     /**
      * 客户端发送命令
+     *
      * @param agentCommand
      */
     public static void sentAgentCommand(AgentCommand agentCommand) {

@@ -102,6 +102,7 @@ public class ShExecuteClient {
                 public void onClose(int i, String s, boolean b) {
                     LogTrack.appendLog("close 客户端" + url + "param1:" + i + "\tparam2:" + s + "\tparam3:" + b);
                     switchStatus.set(false);
+                    InterceptStatus.setSwitch(false);
                     //移除所有方法记录
                     TrackContext.clearRootTrack();
                 }

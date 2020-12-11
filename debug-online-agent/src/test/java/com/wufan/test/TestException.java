@@ -33,7 +33,6 @@ public class TestException {
         new Thread(() -> {
             testThreadExe1(i+1000);
         }).start();
-
     }
 
     private void testExe3(int i) {

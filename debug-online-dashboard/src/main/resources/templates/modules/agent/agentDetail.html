@@ -15,8 +15,8 @@
 <% } %>
 <!-- 操作列 -->
 <script type="text/html" id="oper-col">
-    {{ (d.debugPort == true || d.id == 0) ? '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="checkParam">入参</a>' : '' }}
-    {{ (d.debugPort == true || d.id == 0) ? '<a class="layui-btn layui-btn-danger layui-btn-xs"
+    {{ (d.debugPort == true || d.pid==-1) ? '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="checkParam">入参</a>' : '' }}
+    {{ (d.debugPort == true || d.pid==-1) ? '<a class="layui-btn layui-btn-danger layui-btn-xs"
                                                 lay-event="checkRes">出参</a>' : '' }}
 </script>
 

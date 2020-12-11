@@ -13,3 +13,6 @@ INSERT INTO method_info (pid,id,ip, type_name,method_name,status) VALUES
 
 INSERT INTO method_info (pid,id,ip, type_name,method_name,status) VALUES
   (2,3,'192.168.80.65', 'com.wufan.test.TestException', 'testThreadExe1',1);
+
+INSERT INTO method_info (pid,id,ip, type_name,method_name,status) VALUES
+  (-1,4,'192.168.80.65', 'com.wufan.test.TestBigData', 'testThread',0);

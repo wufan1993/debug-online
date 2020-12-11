@@ -1,5 +1,6 @@
 package com.wufan.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,4 +45,13 @@ public class TestObject {
     public void setList2(List<String> list2) {
         this.list2 = list2;
     }
+
+    public TestObject newObject() {
+        TestObject object=new TestObject();
+        object.setName(this.name);
+        object.setList(new ArrayList<>(this.list));
+        object.setList2(new ArrayList<>(this.list2));
+        return object;
+    }
+
 }

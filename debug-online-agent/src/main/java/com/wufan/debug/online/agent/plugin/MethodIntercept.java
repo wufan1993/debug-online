@@ -27,6 +27,7 @@ public class MethodIntercept {
 
     @RuntimeType
     public static Object intercept(@Origin Method method, @SuperCall Callable<?> callable, @AllArguments Object[] args) throws Exception {
+
         if (InterceptStatus.switchOff.get()) {
             //为了避免过度输出 因此要记录一下类方法缓存数据
             //是否总方法标志

@@ -96,7 +96,7 @@ public class DebugAgent {
 
                 MethodList<MethodDescription.InDefinedShape> declaredMethods = typeDescription.getDeclaredMethods();
                 declaredMethods.forEach(methodDescription -> {
-                    System.out.println("onTransformation PreMainAgent get loaded dynamicType:" + methodDescription.getActualName());
+                    System.out.println("onTransformation load:" +typeDescription.getCanonicalName()+"#"+ methodDescription.getActualName());
                     //methodDescription.getDeclaringType().getCanonicalName();
                 });
                 //System.out.println("onTransformation PreMainAgent get loaded dynamicType:" + typeDescription.getCanonicalName());
