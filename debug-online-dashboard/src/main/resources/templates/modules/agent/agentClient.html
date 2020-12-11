@@ -14,8 +14,8 @@
 <script type="text/html" id="oper-col">
 
     {{ (d.status == 1) ? '
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setupMethod">方法设置</a>
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="enterDebug">调试</a>
+    <a class="layui-btn layui-btn-checked layui-btn-xs" lay-event="enterDebug">调试</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="setupMethod">拦截设置</a>
     ' : '' }}
     <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="btn-update">修改</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="btn-delete">删除</a>
