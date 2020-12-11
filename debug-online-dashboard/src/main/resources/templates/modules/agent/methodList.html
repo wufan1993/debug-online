@@ -17,11 +17,19 @@
 <!-- 操作列 -->
 <script type="text/html" id="oper-col">
     {{ (d.status == 0) ? '
-    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="btn-add-child">添加子方法</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="btn-add-child">子线程关联</a>
     ' : '' }}
 
     <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="btn-update">修改</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="btn-delete">删除</a>
+</script>
+
+<script type="text/html" id="statusStyle">
+    {{#  if(d.status == 0){ }}
+    <span style="color: #007DDB;">{{ '主线程方法' }}</span>
+    {{#  } else { }}
+    <span style="color: gold;">{{ '子线程方法' }}</span>
+    {{#  } }}
 </script>
 
 
@@ -64,7 +72,7 @@
                         {field: 'methodName', title: '方法', width: '10%'},
                         /*{field: 'args', title: '入参'},
                         {field: 'res', title: '出参'},*/
-                        {field: 'status', title: '状态', width: '10%'},
+                        {field: 'status', title: '状态', templet: '#statusStyle', width: '10%'},
                         {templet: '#oper-col', title: '操作', width: '30%'}
                     ]],
                     id: 'topicList'

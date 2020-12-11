@@ -21,6 +21,14 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="btn-delete">删除</a>
 </script>
 
+<script type="text/html" id="statusStyle">
+    {{#  if(d.status == 1){ }}
+    <span style="color: lawngreen;">{{ '在线' }}</span>
+    {{#  } else { }}
+    <span style="color: darkblue;">{{ '失联' }}</span>
+    {{#  } }}
+</script>
+
 <script>
     layui.config({
         base: '/static/plugins/dynamic-tree/module/'
@@ -48,14 +56,13 @@
                 cols: [[
                     {type: 'numbers'},
                     /*{field: 'pid', title: 'pid'},*/
-                    {field: 'id', title: 'id'},
-                    {field: 'ip', title: 'IP'},
-                    {field: 'name', title: '应用名称'},
-                    {field: 'status', title: '状态'},
-
+                    {field: 'id', title: 'id', width: '8%'},
+                    {field: 'ip', title: 'IP', width: '12%'},
+                    {field: 'name', title: '应用名称', width: '20%'},
                     /*{field: 'enterTime', title: '进入时间'},
                     {field: 'lostTime', title: '丢失时间'},*/
-                    {field: 'desc', title: '描述'},
+                    {field: 'desc', title: '描述', width: '20%'},
+                    {field: 'status', title: '状态', templet: '#statusStyle', width: '10%'},
                     {templet: '#oper-col', title: 'oper', width: '30%'}
                 ]],
                 done: function () {
