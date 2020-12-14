@@ -160,6 +160,7 @@ public class DebugAgent {
                 .Default()
                 .type(ElementMatchers.nameMatches(packagePrefix)
                                 .and(ElementMatchers.not(ElementMatchers.nameContains("$$")))
+                                .and(ElementMatchers.not(ElementMatchers.nameContains("aspect")))
                                 //.and(ElementMatchers.not(ElementMatchers.isAbstract()))
                                 .and(ElementMatchers.not(ElementMatchers.isAnnotation()))
                                 .and(ElementMatchers.not(ElementMatchers.isInterface()))
