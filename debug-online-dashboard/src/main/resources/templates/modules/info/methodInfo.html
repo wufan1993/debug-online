@@ -77,6 +77,8 @@
             success: function (data) {	//回调函数 和 后台返回的 数据
                 if (data == "ok") {
                     flag = true;
+                }else{
+                    layer.msg(data);
                 }
             },
             error: function (data) {

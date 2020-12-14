@@ -3,6 +3,8 @@ package com.wufan.debug.online.dashboard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 我本非凡
  * Date:2020-12-03
@@ -30,10 +32,12 @@ public class MethodInfo {
     /**
      * 类名
      */
+    @NotBlank(message = "类全名称必输")
     private String typeName;
     /**
      * 方法名称
      */
+    @NotBlank(message = "方法名称必输")
     private String methodName;
 
     /**

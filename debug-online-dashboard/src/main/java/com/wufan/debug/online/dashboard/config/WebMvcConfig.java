@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -27,6 +28,13 @@ import java.util.List;
 @Slf4j
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
+
+    @Bean
+    public LocalValidatorFactoryBean mvcValidator() {
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+        localValidatorFactoryBean.getValidationPropertyMap().put("hibernate.validator.fail_fast", "true");
+        return localValidatorFactoryBean;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

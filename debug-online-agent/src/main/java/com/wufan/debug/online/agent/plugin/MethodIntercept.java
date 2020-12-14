@@ -28,27 +28,34 @@ public class MethodIntercept {
     @RuntimeType
     public static Object intercept(@Origin Method method, @SuperCall Callable<?> callable, @AllArguments Object[] args) throws Exception {
 
+        //Thread.currentThread().getStackTrace()[0].
         if (InterceptStatus.switchOff.get()) {
+            //如果是accessor 那么直接退出
+            if(Thread.currentThread().getStackTrace()[3].getMethodName().contains("$accessor$")){
+                return callable.call();
+            }
+
             //为了避免过度输出 因此要记录一下类方法缓存数据
             //是否总方法标志
             Boolean flag = false;
 
             Boolean childFlag = false;
 
-            //如果是主方法进入 那么强制设置一个新的rootId
+            //获取方法全路径名称
             String typeMethod = method.getDeclaringClass().getName() + "#" + method.getName();
 
             //判断当前是否存在阻塞主方法
-
-
-            if (InterceptStatus.containMethodList(typeMethod)) {
-                //如果存在主业务，那么需要阻塞其它任务
-                if (TrackContext.getRootMethodId(typeMethod) != null) {
-                    throw new RuntimeException("当前主业务正在调试运行中，请稍后再访问");
+            if (TrackContext.getRootId() == null) {
+                //如果是主方法进入 那么强制设置一个新的rootId
+                if (InterceptStatus.containMethodList(typeMethod)) {
+                    //如果存在主业务，那么需要阻塞其它任务
+                    if (TrackContext.getRootMethodId(typeMethod) != null) {
+                        throw new RuntimeException("当前主业务正在调试运行中，请稍后再访问");
+                    }
+                    TrackContext.initRootId();
+                    TrackContext.setStaticRootMethod(typeMethod);
+                    flag = true;
                 }
-                TrackContext.initRootId();
-                TrackContext.setStaticRootMethod(typeMethod);
-                flag = true;
             }
 
             if (TrackContext.getRootId() == null) {

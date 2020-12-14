@@ -7,6 +7,7 @@ import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.util.PackRes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class MachineController extends BaseController {
 
     @PostMapping("/saveMachine")
     @ResponseBody
-    public String saveMachine(MachineInfo machineInfo) {
+    public String saveMachine(@Validated MachineInfo machineInfo) {
         boolean res = saveEntity(machineMapper, machineInfo, () -> machineMapper.getMaxId() + 1);
         if (res) {
             return "ok";
@@ -77,9 +78,9 @@ public class MachineController extends BaseController {
     @GetMapping("/deleteMachine")
     @ResponseBody
     public String deleteMachine(Long id) {
-        if(id!=null && id!=0){
+        if (id != null && id != 0) {
             int i = machineMapper.deleteById(id);
-            if(i==1){
+            if (i == 1) {
                 return "ok";
             }
         }

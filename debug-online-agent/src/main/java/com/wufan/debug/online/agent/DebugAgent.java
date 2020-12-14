@@ -3,12 +3,15 @@ package com.wufan.debug.online.agent;
 import com.wufan.debug.online.agent.plugin.MethodIntercept;
 import com.wufan.debug.online.agent.socket.ShExecuteClient;
 import com.wufan.debug.online.agent.utils.LogTrack;
+import com.wufan.debug.online.utils.JsonUtils;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.method.MethodList;
 import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.description.type.TypeList;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
 
@@ -60,7 +63,7 @@ public class DebugAgent {
         //暂停 5 秒 钟
         try {
             LogTrack.appendLog("暂停5秒钟 等候socket连接....");
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -73,14 +76,48 @@ public class DebugAgent {
         //抽象类不拦截 静态方法不拦截
 
         AgentBuilder.Transformer transformer = (builder, typeDescription, classLoader, javaModule) -> {
+
+            System.out.println("transformer load:" + typeDescription.getCanonicalName());
+
+            //TypeDescription.Generic superClass = typeDescription.getNestHost().getSuperClass();
+
+            ElementMatcher.Junction<MethodDescription> methodIntercept = ElementMatchers.isMethod()/*.and(ElementMatchers.isSynthetic())*/
+                    //.and(ElementMatchers.not(ElementMatchers.isVirtual().and(ElementMatchers.isProtected())))
+                    .and(ElementMatchers.not(ElementMatchers.nameStartsWith("main")))
+                    //.and(ElementMatchers.not(ElementMatchers.nameContains("$accessor$")))
+                    //.and(ElementMatchers.not(ElementMatchers.nameContains("$original$")))
+                    //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("<init>")))
+                    //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("lambda$main$0")))
+                    .and(ElementMatchers.not(ElementMatchers.isAbstract()))
+                    .and(ElementMatchers.not(ElementMatchers.isStatic()))
+                    .and(ElementMatchers.not(ElementMatchers.isGetter()))
+                    .and(ElementMatchers.not(ElementMatchers.isSetter()))
+                    .and(ElementMatchers.not(ElementMatchers.isBridge()))
+                    .and(ElementMatchers.not(ElementMatchers.isConstructor()))
+                    //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
+                    //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
+                    ;
+
+                    /*if(superClass!=null){
+                        methodIntercept.and(ElementMatchers.not(ElementMatchers.isAccessibleTo(superClass.asErasure())));
+                    }*/
+
             DynamicType.Builder.MethodDefinition.ImplementationDefinition<?> main = builder
                     //.method(ElementMatchers.any()) // 拦截任意方法
-                    .method(ElementMatchers.not(ElementMatchers.nameStartsWith("main"))
-                            .and(ElementMatchers.not(ElementMatchers.isAbstract()))
-                            .and(ElementMatchers.not(ElementMatchers.isStatic()))
-                            .and(ElementMatchers.not(ElementMatchers.isGetter()))
-                            .and(ElementMatchers.not(ElementMatchers.isSetter()))
+                    .method(methodIntercept
+                                    //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
+                                    //.and(ElementMatchers.not(ElementMatchers.isAccessibleTo()))
+                                    //.and(ElementMatchers.not(ElementMatchers.isStrict()))
+
+                                    /*.and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.CLASS)))
+                                    .and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.OBJECT)))
+                                    .and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.UNDEFINED)))
+                                    .and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.VOID)))*/
+
+                            //.and(ElementMatchers.not(ElementMatchers.isProtected()))
+                            //.and(ElementMatchers.not(ElementMatchers.isVirtual()))
                     );
+
             return main.intercept(MethodDelegation.to(MethodIntercept.class)); // 委托
         };
 
@@ -96,7 +133,7 @@ public class DebugAgent {
 
                 MethodList<MethodDescription.InDefinedShape> declaredMethods = typeDescription.getDeclaredMethods();
                 declaredMethods.forEach(methodDescription -> {
-                    System.out.println("onTransformation load:" +typeDescription.getCanonicalName()+"#"+ methodDescription.getActualName());
+                    //System.out.println("onTransformation load:" +typeDescription.getCanonicalName()+"#"+ methodDescription.getActualName());
                     //methodDescription.getDeclaringType().getCanonicalName();
                 });
                 //System.out.println("onTransformation PreMainAgent get loaded dynamicType:" + typeDescription.getCanonicalName());
@@ -123,10 +160,12 @@ public class DebugAgent {
                 .Default()
                 .type(ElementMatchers.nameMatches(packagePrefix)
                                 .and(ElementMatchers.not(ElementMatchers.nameContains("$$")))
-                                .and(ElementMatchers.not(ElementMatchers.isAbstract()))
+                                //.and(ElementMatchers.not(ElementMatchers.isAbstract()))
                                 .and(ElementMatchers.not(ElementMatchers.isAnnotation()))
                                 .and(ElementMatchers.not(ElementMatchers.isInterface()))
-                                .and(ElementMatchers.not(ElementMatchers.isEnum()))
+                                .and(ElementMatchers.not(ElementMatchers.isEnum())
+                                        //.and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.UNDEFINED)))
+                                )
                         /*.and(ElementMatchers.not(ElementMatchers.isStatic()))*/
 
                 ) // 指定需要拦截的类

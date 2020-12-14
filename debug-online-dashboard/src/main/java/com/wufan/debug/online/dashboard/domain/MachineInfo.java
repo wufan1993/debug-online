@@ -2,6 +2,9 @@ package com.wufan.debug.online.dashboard.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+
 /**
  * 我本非凡
  * Date:2020-12-03
@@ -22,10 +25,12 @@ public class MachineInfo {
     /**
      * 机器IP
      */
+    @NotBlank(message = "IP必输")
     private String ip;
     /**
      * 应用名称
      */
+    @NotBlank(message = "应用名称必输")
     private String name;
     /**
      * 机器描述
@@ -55,5 +60,6 @@ public class MachineInfo {
     /**
      * 正则切入控制
      */
+    @NotBlank(message = "正则关系必输")
     private String regexp;
 }
