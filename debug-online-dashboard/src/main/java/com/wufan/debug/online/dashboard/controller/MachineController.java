@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import javax.websocket.Session;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 我本非凡
@@ -55,14 +56,16 @@ public class MachineController extends BaseController {
         List<MachineInfo> machineInfoList = machineMapper.selectList(new QueryWrapper<>());
         final Map<String, Session> livingSessions = WebSocketSession.AGENT_CLIENT.getLivingSessions();
 
-        machineInfoList.forEach(machineInfo -> {
+        machineInfoList = machineInfoList.stream().filter(machineInfo -> {
             machineInfo.setPid(-1L);
             if (livingSessions.containsKey(machineInfo.getIp())) {
                 machineInfo.setStatus(1);
             }
             //测试主方法用
             //machineInfo.setStatus(1);
-        });
+            //return true;
+            return machineInfo.getId() != 1;
+        }).collect(Collectors.toList());
         /*List<AgentClient> clientList = null;
         AtomicInteger integer = new AtomicInteger(1);
         clientList = livingSessions.keySet().stream().map(username -> {
