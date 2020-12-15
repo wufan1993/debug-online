@@ -13,14 +13,14 @@ import javax.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
 /**
- * 上海京东到家元信信息技术有限公司
- * Date:2020-12-14
- * Time:20:12:39
+ * 我本非凡
+ * Date:2020-12-15
+ * Time:13:12:36
  * Description:GlobalExceptionHandler.java
  *
  * @author wufan02
  * @since JDK 1.8
- * Copyright (c) 2020 imdada System Incorporated All Rights Reserved.
+ * Enjoy a grander sight By climbing to a greater height
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
