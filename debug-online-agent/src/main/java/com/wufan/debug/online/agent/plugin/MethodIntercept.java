@@ -4,10 +4,7 @@ import com.wufan.debug.online.agent.track.NumberIncrease;
 import com.wufan.debug.online.agent.track.ProcessAgent;
 import com.wufan.debug.online.agent.track.ProcessSendSocket;
 import com.wufan.debug.online.agent.track.TrackContext;
-import net.bytebuddy.implementation.bind.annotation.AllArguments;
-import net.bytebuddy.implementation.bind.annotation.Origin;
-import net.bytebuddy.implementation.bind.annotation.RuntimeType;
-import net.bytebuddy.implementation.bind.annotation.SuperCall;
+import net.bytebuddy.implementation.bind.annotation.*;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
@@ -26,14 +23,28 @@ public class MethodIntercept {
 
 
     @RuntimeType
-    public static Object intercept(@Origin Method method, @SuperCall Callable<?> callable, @AllArguments Object[] args) throws Exception {
+    public static Object intercept(/*@This Object object,*/@Super Object pro, @Origin Method method, @SuperCall Callable<?> callable, @AllArguments Object[] args) throws Exception {
 
         //Thread.currentThread().getStackTrace()[0].
         if (InterceptStatus.switchOff.get()) {
             //如果是accessor 那么直接退出
-            if(Thread.currentThread().getStackTrace()[3].getMethodName().contains("$accessor$")){
+            if(!pro.getClass().getName().startsWith(method.getDeclaringClass().getName())){
                 return callable.call();
             }
+            /*Boolean tag = false;
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            for (int i = 2; i < 8 && i < stackTrace.length; i++) {
+                String format = String.format("%s$accessor$", method.getName());
+                if (method.getDeclaringClass().getName().equals(stackTrace[i].getClassName())) {
+                    if (stackTrace[i].getMethodName().startsWith(format)) {
+                        tag = true;
+                        break;
+                    }
+                }
+            }
+            if (tag) {
+                return callable.call();
+            }*/
 
             //为了避免过度输出 因此要记录一下类方法缓存数据
             //是否总方法标志

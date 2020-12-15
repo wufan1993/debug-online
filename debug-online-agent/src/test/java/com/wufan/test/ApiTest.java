@@ -16,7 +16,7 @@ package com.wufan.test;
  * <p>
  * create by wufan on 2020
  */
-public class ApiTest extends BabaType {
+public class ApiTest extends DaDaType {
 
     public static void main(String[] args) {
 
@@ -43,6 +43,8 @@ public class ApiTest extends BabaType {
         //http_lt2("蓝蓝");
 
         protectMethod("小红");
+
+        privateMethod("private");
 
         /*try {
             Thread.sleep((long) (Math.random() * 500));
@@ -77,6 +79,18 @@ public class ApiTest extends BabaType {
         }
         System.out.println("测试结果：hi3 " + name);
 
+    }
+
+    private String privateMethod(String name) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //System.out.println("protectStaticMethod==>>>" + name);
+
+        publicMethod(name+"das");
+        return "privateMethod==>>>" + name;
     }
 
 }

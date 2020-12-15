@@ -83,17 +83,25 @@ public class DebugAgent {
 
             ElementMatcher.Junction<MethodDescription> methodIntercept = ElementMatchers.isMethod()/*.and(ElementMatchers.isSynthetic())*/
                     //.and(ElementMatchers.not(ElementMatchers.isVirtual().and(ElementMatchers.isProtected())))
-                    .and(ElementMatchers.not(ElementMatchers.nameStartsWith("main")))
+                    .and(
+                            ElementMatchers.not(ElementMatchers.nameStartsWith("main"))
+                            .and(ElementMatchers.not(ElementMatchers.isAbstract()))
+                            .and(ElementMatchers.not(ElementMatchers.isStatic()))
+                            .and(ElementMatchers.not(ElementMatchers.isGetter()))
+                            .and(ElementMatchers.not(ElementMatchers.isSetter()))
+                            .and(ElementMatchers.not(ElementMatchers.isBridge()))
+                            .and(ElementMatchers.not(ElementMatchers.isSynthetic()))
+                            .and(ElementMatchers.not(ElementMatchers.isConstructor()))
+                            //.and(ElementMatchers.not(ElementMatchers.isVirtual()))
+                    )
+                    /*.or(
+                            ElementMatchers.isVirtual()
+                    )*/
                     //.and(ElementMatchers.not(ElementMatchers.nameContains("$accessor$")))
                     //.and(ElementMatchers.not(ElementMatchers.nameContains("$original$")))
                     //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("<init>")))
                     //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("lambda$main$0")))
-                    .and(ElementMatchers.not(ElementMatchers.isAbstract()))
-                    .and(ElementMatchers.not(ElementMatchers.isStatic()))
-                    .and(ElementMatchers.not(ElementMatchers.isGetter()))
-                    .and(ElementMatchers.not(ElementMatchers.isSetter()))
-                    .and(ElementMatchers.not(ElementMatchers.isBridge()))
-                    .and(ElementMatchers.not(ElementMatchers.isConstructor()))
+
                     //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
                     //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
                     ;
