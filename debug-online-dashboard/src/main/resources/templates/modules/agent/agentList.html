@@ -140,6 +140,14 @@
             ws.onclose = function (evt) { //绑定关闭或断开连接事件
                 console.log("Connection closed." + username);
                 switchMonitor(false);
+                //配置一个透明的询问框
+                layer.msg('当前连接已丢失<br>请重新刷新页面', {
+                    time: 20000, //20s后自动关闭
+                    btn: ['刷新页面', '知道了']
+                    ,yes: function(){
+                        window.location.reload();
+                    }
+                });
                 //js.alertSuccess("当前连接以成功关闭!! ==>>>" + username);
                 ws = null;
             };
