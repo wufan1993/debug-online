@@ -1,15 +1,19 @@
 <% layout('/layouts/index.html', {title: '监控方法列表', libs: []}){ %>
 <!-- ============================================================== -->
 
-<div class="layui-btn-group">
+<div class="layui-btn-group layui-col-lg6">
     <a class="layui-btn layui-btn-normal" id="btn-switchMonitorOn">开启拦截</a>
     <a class="layui-btn layui-btn-normal" id="btn-switchMonitorOff">关闭拦截</a>
     <a class="layui-btn layui-btn-normal" id="btn-clearMonitor">清空数据</a>
 </div>
-&nbsp;
-<!--<div class="layui-btn-group">
-    <button class="layui-btn" id="btn-refresh">刷新表格</button>
+<!--<div class="site-demo-button layui-col-lg6" id="layerDemo" style="margin-bottom: 0;">
+    <button data-method="notice" class="layui-btn" id="noDataNotice">没出现数据？</button>
 </div>-->
+&nbsp;
+<div class="layui-btn-group">
+    <!--<button class="layui-btn" id="btn-refresh">刷新表格</button>-->
+    <button data-method="notice" class="layui-btn" id="noDataNotice">没出现数据？</button>
+</div>
 <table id="table1" class="layui-table" lay-filter="table1"></table>
 
 <% } %>
@@ -87,6 +91,24 @@
             clearMonitor();
             renderTable();
         });
+
+        $('#noDataNotice').click(function () {
+            //示范一个公告层
+            layer.open({
+                type: 1
+                ,title: false //不显示标题栏
+                ,closeBtn: false
+                ,area: '300px;'
+                ,shade: 0.8
+                ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                ,btn: ['知道了']
+                ,btnAlign: 'c'
+                ,moveType: 1 //拖拽模式，0或者1
+                ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">1、机器的匹配正则<br>要覆盖方法<br><br>2、只有主方法才会拦截，但是主线程下的子线程无法拦截，因此需要设置子方法强制关联<br><br>3、如果都设置好还是不出数据，有可能客户端断开了当前链接，可以尝试刷新当前页面重新链接<br><br>我们此后的征途是星辰大海 ^_^</div>'
+            });
+        });
+
+
 
         //监听工具条
         table.on('tool(table1)', function (obj) {

@@ -1,11 +1,17 @@
 <% layout('/layouts/index.html', {title: '调用详细堆栈', libs: []}){ %>
 <!-- ============================================================== -->
 
-<div class="layui-btn-group">
-    <button class="layui-btn" id="btn-expand">全部展开</button>
-    <button class="layui-btn" id="btn-fold">全部折叠</button>
-    <button class="layui-btn" id="btn-refresh">刷新表格</button>
+<div class="layui-btn-group layui-col-lg6">
+    <button class="layui-btn layui-btn-normal" id="btn-expand">全部展开</button>
+    <button class="layui-btn layui-btn-normal" id="btn-fold">全部折叠</button>
+    <button class="layui-btn layui-btn-normal" id="btn-refresh">刷新表格</button>
 </div>
+&nbsp;
+<div class="layui-btn-group">
+    <!--<button class="layui-btn" id="btn-refresh">刷新表格</button>-->
+    <button data-method="notice" class="layui-btn" id="noDataNotice">断点数据说明</button>
+</div>
+
 &nbsp;
 <div id="topicList">
     <table id="table1" class="layui-table" lay-filter="table1"></table>
@@ -15,8 +21,8 @@
 <% } %>
 <!-- 操作列 -->
 <script type="text/html" id="oper-col">
-    {{ (d.debugPort == true || d.pid==-1) ? '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="checkParam">入参</a>' : '' }}
-    {{ (d.debugPort == true || d.pid==-1) ? '<a class="layui-btn layui-btn-danger layui-btn-xs"
+    {{ (d.args!=null && (d.debugPort == true || d.pid==-1)) ? '<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="checkParam">入参</a>' : '' }}
+    {{ (d.res!=null && (d.debugPort == true || d.pid==-1)) ? '<a class="layui-btn layui-btn-danger layui-btn-xs"
                                                 lay-event="checkRes">出参</a>' : '' }}
 </script>
 
@@ -92,6 +98,22 @@
 
             $('#btn-refresh').click(function () {
                 renderTable();
+            });
+
+            $('#noDataNotice').click(function () {
+                //示范一个公告层
+                layer.open({
+                    type: 1
+                    ,title: false //不显示标题栏
+                    ,closeBtn: false
+                    ,area: '300px;'
+                    ,shade: 0.8
+                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                    ,btn: ['知道了']
+                    ,btnAlign: 'c'
+                    ,moveType: 1 //拖拽模式，0或者1
+                    ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">1、要想看调用链路径上的出参入参<br>需要设置监控方法<br><br>2、注意不饶关闭主方法客户端，每一次客户端链接都会清空监控方法列表，重新刷新后需要重新设置<br><br>3、设置完成监控方法，重新调用主方法，查看调用记录，即可访问到具体方法上的出参，入参<br><br>我们此后的征途是星辰大海 ^_^</div>'
+                });
             });
 
             //监听工具条

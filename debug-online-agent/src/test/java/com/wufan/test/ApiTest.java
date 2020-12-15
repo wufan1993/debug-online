@@ -20,10 +20,10 @@ public class ApiTest extends DaDaType {
 
     public static void main(String[] args) {
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 1000; i++) {
             new Thread(() -> new ApiTest().http_lt1("哪咤")).start();
             try {
-                Thread.sleep(10000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

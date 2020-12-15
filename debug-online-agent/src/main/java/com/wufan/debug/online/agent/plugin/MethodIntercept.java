@@ -126,7 +126,9 @@ public class MethodIntercept {
                 //输出出参数
                 ProcessAgent processReturn = new ProcessAgent(process, 1);
                 processReturn.setCostTime(System.currentTimeMillis() - start);
-                processReturn.setRes(call);
+                if (InterceptStatus.containMethodParamList(typeMethod) || flag) {
+                    processReturn.setRes(call);
+                }
 
                 if (status == 2) {
                     processReturn.setMessage(processReturn.getMessage() + "调用深度+");
