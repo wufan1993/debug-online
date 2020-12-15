@@ -17,7 +17,7 @@
 #### 安装教程
 
 1.  启动dashboard客户端，直接package或者install 模块 debug-online-dashboard,生成jar包，并按照启动spring-boot的jar启动方式启动即可
-2.  添加客户端信息，需要配置具体客户端IP和包路径的匹配正则(正则如：com.wufan.test.*)
+2.  访问客户端http://localhost:8080，添加客户端信息，需要配置具体客户端IP和包路径的匹配正则(正则如：com.wufan.test.*)
 3.  下载debug-agent.jar这个包，这个包在dashboard项目resources/static/data目录下
      下载案例：http://localhost:8080/static/data/debug-agent.jar
 4.  在具体项目应用中，添加jvm启动参数 -javaagent:debug-agent.jar=127.0.0.1:8080
