@@ -26,19 +26,27 @@ public class O2oAgentTestApplication extends WebMvcConfigurationSupport {
         SpringApplication.run(O2oAgentTestApplication.class, args);
 
 
-        new Thread(()->{
-            while (true){
-                ApiTest apiTest=new ApiTest();
-                apiTest.http_lt1("测试调用");
-                System.out.println("测试调用完成");
+        new Thread(() -> {
+            while (true) {
+                try {
+                    ApiTest apiTest = new ApiTest();
+                    apiTest.http_lt1("测试调用");
+                    System.out.println("测试调用完成");
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
 
-        new Thread(()->{
-            while (true){
-                TestException test = new TestException();
-                for (int i = 0; i < 100; i++) {
-                    test.testExe1(i);
+        new Thread(() -> {
+            while (true) {
+                try {
+                    TestException test = new TestException();
+                    for (int i = 0; i < 100; i++) {
+                        test.testExe1(i);
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
