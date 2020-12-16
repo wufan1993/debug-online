@@ -36,8 +36,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class AgentController {
 
-    @Value(value = "${agent.remoteHost}")
-    private String agentHost;
 
     @GetMapping("/listAgentList")
     public String listAgentList(Model model, String username) {
@@ -48,7 +46,7 @@ public class AgentController {
             WebSocketSession.AGENT_CLIENT.sendText(username, "start");
             return new HashMap<>();
         });*/
-        model.addAttribute("agentHost", agentHost);
+        //model.addAttribute("agentHost", agentHost);
         AgentRemoteServerEndpoint.userText.put(username, new HashMap<>());
 
         //如果当前存在会话，那么关闭之前的会话
