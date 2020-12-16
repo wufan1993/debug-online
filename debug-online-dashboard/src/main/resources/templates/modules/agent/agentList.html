@@ -128,7 +128,8 @@
         var ws;
         var username = '${username}';
         if (ws == null || ws == undefined) {
-            ws = new WebSocket("ws://localhost:8080/socket/agentClient/" + username);
+            //ws = new WebSocket("ws://preagent.jddj.com/socket/agentClient/" + username);
+            ws = new WebSocket("ws://${agentHost}/socket/agentClient/" + username);
 
             ws.onopen = function (evt) {  //绑定连接事件
                 console.log("Connection open ..." + username);
