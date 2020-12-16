@@ -9,7 +9,7 @@ import java.util.List;
  * 我本非凡
  * Date:2020-12-11
  * Time:10:12:38
- * Description:TestBigData.java
+ * Description:大对象的传递控制
  *
  * @author wufan02
  * @since JDK 1.8

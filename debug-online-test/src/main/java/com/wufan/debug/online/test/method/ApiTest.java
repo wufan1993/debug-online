@@ -1,20 +1,14 @@
 package com.wufan.debug.online.test.method;
 
 /**
- * 链路追踪
- * VM options：
- * -javaagent:E:\itstack\GIT\itstack.org\itstack-demo-agent\itstack-demo-agent-06\target\itstack-demo-agent-06-1.0.0-SNAPSHOT.jar=testargs
- * <p>
- * 按需打开需要测试的模块
- * 链路监控
- * pluginGroup.add(new LinkPlugin());
- * Jvm监控
- * pluginGroup.add(new JvmPlugin());
- * <p>
- * <p>
- * <p>
- * <p>
- * create by wufan on 2020
+ * 我本非凡
+ * Date:2020-12-16
+ * Time:21:12:23
+ * Description:ApiTest.java
+ *
+ * @author wufan02
+ * @since JDK 1.8
+ * Enjoy a grander sight By climbing to a greater height
  */
 public class ApiTest extends DaDaType {
 
@@ -83,13 +77,13 @@ public class ApiTest extends DaDaType {
 
     private String privateMethod(String name) {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         //System.out.println("protectStaticMethod==>>>" + name);
 
-        publicMethod(name+"das");
+        publicMethod(name+"private+public");
         return "privateMethod==>>>" + name;
     }
 

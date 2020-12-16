@@ -19,7 +19,7 @@ public class TestException {
 
     public static void main(String[] args) {
         TestException test = new TestException();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 3; i++) {
             test.testExe1(i);
         }
     }
@@ -34,7 +34,7 @@ public class TestException {
 
     private void testExe3(int i) {
         System.out.println(i);
-        if (i == 50) {
+        if (i == 2) {
             throw new RuntimeException("抛出异常");
         }
 
@@ -45,10 +45,10 @@ public class TestException {
 
     }
 
-    private void testExe1(int i) {
+    public void testExe1(int i) {
         System.out.println(i);
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

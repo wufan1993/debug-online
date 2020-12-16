@@ -1,5 +1,15 @@
 package com.wufan.debug.online.test.method;
 
+/**
+ * 我本非凡
+ * Date:2020-12-16
+ * Time:21:12:34
+ * Description:BabaType.java
+ *
+ * @author wufan02
+ * @since JDK 1.8
+ * Enjoy a grander sight By climbing to a greater height
+ */
 public class BabaType {
 
 /*
@@ -31,7 +41,7 @@ public class BabaType {
         //privateMethod(name+"--");
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
