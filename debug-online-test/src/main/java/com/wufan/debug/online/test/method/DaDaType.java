@@ -15,7 +15,7 @@ public abstract class DaDaType extends BabaType{
 
 
     protected String protectMethod(String name) {
-        //System.out.println("protectMethod==>>>" + name);
+        System.out.println("protectMethod==>>>" + name);
 
         try {
             Thread.sleep(200);
