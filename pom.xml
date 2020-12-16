@@ -12,6 +12,7 @@
         <module>debug-online-agent</module>
         <module>debug-online-dashboard</module>
         <module>debug-online-common</module>
+        <module>debug-online-test</module>
     </modules>
 
 

@@ -1,4 +1,4 @@
-package com.wufan.test;
+package com.wufan.debug.online.test.method;
 
 public class BabaType {
 
