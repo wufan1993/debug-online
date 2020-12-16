@@ -1,5 +1,6 @@
 package com.wufan.debug.online.test;
 
+import com.wufan.debug.online.test.method.ApiTest;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +23,14 @@ public class O2oAgentTestApplication extends WebMvcConfigurationSupport {
     public static void main(String[] args) {
 
         SpringApplication.run(O2oAgentTestApplication.class, args);
+
+
+        new Thread(()->{
+            while (true){
+                ApiTest apiTest=new ApiTest();
+                apiTest.http_lt1("测试调用");
+            }
+        }).start();
     }
 
 }
