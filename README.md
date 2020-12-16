@@ -1,7 +1,7 @@
 # debug-online
 
 #### 介绍
-在线web服务调试系统
+在线web服务调试系统,不生产数据，只做数据的搬运工，可以起到类似于远程调试的效果，实时查看方法调用链和入参出参，再也不用加参数日志啦！
 
 #### 软件架构
 软件架构说明
@@ -12,15 +12,17 @@
 基础工具类和通用实体
 3.  debug-online-dashboard
 以收集agent包传递过来的数据并进行可视化界面展示
+4.  debug-online-test
+测试模块，简单启动一个无限循环任务，来监测数据
 
 
 #### 安装教程
 
 1.  启动dashboard客户端，直接package或者install 模块 debug-online-dashboard,生成jar包，并按照启动spring-boot的jar启动方式启动即可
-2.  访问客户端http://localhost:8080，添加客户端信息，需要配置具体客户端IP和包路径的匹配正则(正则如：com.wufan.test.*)
+2.  访问客户端http://localhost:8080，添加客户端信息，需要配置具体客户端IP和包路径的匹配正则(正则如：com.wufan.debug.online.test.method.*)
 3.  下载debug-agent.jar这个包，这个包在dashboard项目resources/static/data目录下
      下载案例：http://localhost:8080/static/data/debug-agent.jar
-4.  在具体项目应用中，添加jvm启动参数 -javaagent:debug-agent.jar=127.0.0.1:8080
+4.  在具体项目应用中，添加jvm启动参数 -javaagent:debug-agent.jar=客户端地址(如:49.232.171.225:8080)
 5.  打开dashboard客户端，可以看到具体机器已经注册到了dashboard上，可以开始进行项目调试
 
 #### 使用说明

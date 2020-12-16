@@ -31,7 +31,14 @@ public class O2oAgentTestApplication extends WebMvcConfigurationSupport {
                 try {
                     ApiTest apiTest = new ApiTest();
                     apiTest.http_lt1("测试调用");
-                    System.out.println("测试调用完成");
+                    //System.out.println("测试调用完成");
+
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
@@ -44,9 +51,14 @@ public class O2oAgentTestApplication extends WebMvcConfigurationSupport {
                     TestException test = new TestException();
                     for (int i = 0; i < 100; i++) {
                         test.testExe1(i);
+                        try {
+                            Thread.sleep(000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }).start();
