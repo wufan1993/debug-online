@@ -55,7 +55,7 @@
     </dependencies>
 
     <build>
-        <finalName>debug-online-dashboard</finalName>
+        <finalName>debug-online-test</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

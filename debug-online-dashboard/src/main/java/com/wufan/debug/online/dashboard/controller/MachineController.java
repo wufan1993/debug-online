@@ -63,8 +63,8 @@ public class MachineController extends BaseController {
             }
             //测试主方法用
             //machineInfo.setStatus(1);
-            //return true;
-            return machineInfo.getId() != 1;
+            return true;
+            //return machineInfo.getId() != 1;
         }).collect(Collectors.toList());
         /*List<AgentClient> clientList = null;
         AtomicInteger integer = new AtomicInteger(1);

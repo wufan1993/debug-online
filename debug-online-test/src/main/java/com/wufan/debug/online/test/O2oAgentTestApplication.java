@@ -29,6 +29,7 @@ public class O2oAgentTestApplication extends WebMvcConfigurationSupport {
             while (true){
                 ApiTest apiTest=new ApiTest();
                 apiTest.http_lt1("测试调用");
+                System.out.println("测试调用完成");
             }
         }).start();
     }
