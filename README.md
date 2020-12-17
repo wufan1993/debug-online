@@ -43,4 +43,10 @@
 4.  dashboard实时将收集到的数据吐到web端页面进行实时展现
 
 
+#### 技术体系
+1.  后端框架:springboot+websocket
+2.  数据库:mybatis-plus+h2
+2.  前端:beetl模版引擎+layui前端组件
+3.  核心功能-字节码编程：byte-buddy
+
 
