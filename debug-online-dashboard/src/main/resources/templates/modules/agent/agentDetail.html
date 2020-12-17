@@ -1,6 +1,6 @@
 <% layout('/layouts/index.html', {title: '调用详细堆栈', libs: []}){ %>
 <!-- ============================================================== -->
-
+<script src="/static/plugins/clipboard/dist/clipboard.min.js"></script>
 <div class="layui-btn-group layui-col-lg6">
     <button class="layui-btn layui-btn-normal" id="btn-expand">全部展开</button>
     <button class="layui-btn layui-btn-normal" id="btn-fold">全部折叠</button>
@@ -17,7 +17,7 @@
     <table id="table1" class="layui-table" lay-filter="table1"></table>
 </div>
 
-
+<button hidden id="hiddenCopyClipboard">Copy</button>
 <% } %>
 <!-- 操作列 -->
 <script type="text/html" id="oper-col">
@@ -124,8 +124,24 @@
                 if (layEvent === 'checkParam') {
                     //layer.msg(JSON.stringify(data.args));
                     console.log(data.args);
+                    var clipboard = new ClipboardJS('#hiddenCopyClipboard', {
+                        text: function() {
+                            return JSON.stringify(data.args);
+                        }
+                    });
+                    //$("#clipboardData").clear();
+                    $("#hiddenCopyClipboard").trigger("click");
+                    layer.msg("以粘贴到粘贴板,结构化json请直接查看浏览器开发者工具console面板")
                 } else if (layEvent === 'checkRes') {
                     console.log(data.res);
+                    var clipboard = new ClipboardJS('#hiddenCopyClipboard', {
+                        text: function() {
+                            return JSON.stringify(data.res);
+                        }
+                    });
+                    //$("#clipboardData").clear();
+                    $("#hiddenCopyClipboard").trigger("click");
+                    layer.msg("以粘贴到粘贴板,结构化json请直接查看浏览器开发者工具console面板")
                     //layer.msg(JSON.stringify(data.res));
                 }
             });
