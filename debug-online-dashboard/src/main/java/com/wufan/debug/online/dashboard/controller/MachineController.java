@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.websocket.Session;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +33,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MachineController extends BaseController {
 
+
+    /**
+     * 未连接机器集合
+     */
+    //public static Set<String> lostIpList=new HashSet<>();
 
     @Resource
     private MachineMapper machineMapper;
@@ -76,6 +80,28 @@ public class MachineController extends BaseController {
             return client;
         }).collect(Collectors.toList());*/
         return PackRes.getResult(machineInfoList);
+    }
+
+    @GetMapping("/listLostMachine")
+    @ResponseBody
+    public Map<String, Object> listLostMachine() {
+
+        List<MachineInfo> machineInfoList = machineMapper.selectList(new QueryWrapper<>());
+        Set<String> dbMachineList=machineInfoList.stream().map(MachineInfo::getIp).collect(Collectors.toSet());
+        final Map<String, Session> livingSessions = WebSocketSession.AGENT_CLIENT.getLivingSessions();
+        List<String> lostIpList= new ArrayList<>(livingSessions.keySet());
+
+        List<String> lostIpListFilter=lostIpList.stream().filter(ip-> !dbMachineList.contains(ip)).collect(Collectors.toList());
+
+        List<MachineInfo> lostMachineInfoList=new ArrayList<>();
+        for (int i = 0; i < lostIpListFilter.size(); i++) {
+            MachineInfo machineInfo=new MachineInfo();
+            machineInfo.setPid(-1L);
+            machineInfo.setId((long) (i + 1));
+            machineInfo.setIp(lostIpListFilter.get(i));
+            lostMachineInfoList.add(machineInfo);
+        }
+        return PackRes.getResult(lostMachineInfoList);
     }
 
     @GetMapping("/deleteMachine")

@@ -1,11 +1,12 @@
 package com.wufan.debug.online.dashboard.socket.server;
 
+import com.wufan.debug.online.dashboard.controller.MachineController;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
 import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.utils.JsonUtils;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
+import com.wufan.debug.online.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /**
  * 我本非凡
@@ -102,7 +102,10 @@ public class AgentRemoteServerEndpoint {
                 if(regexp!=null){
                     AgentCommand agentCommand=new AgentCommand(AgentCommandEnum.CLIENT_REGEXP,regexp);
                     WebSocketSession.AGENT_CLIENT.sendText(username, agentCommand);
-                }
+                    //MachineController.lostIpList.remove(username);
+                }/* else {
+                    MachineController.lostIpList.add(username);
+                }*/
             });
         }
         commandEnum.executeCommand(command.getContent());

@@ -12,6 +12,11 @@
 
 <table id="table1" class="layui-table" lay-filter="table1" ></table>
 
+<div class="layui-col-lg6">
+    <table id="table2" class="layui-table" lay-filter="table2" ></table>
+</div>
+
+
 <% } %>
 
 <!-- 操作列 -->
@@ -34,6 +39,15 @@
 </script>
 
 <script>
+
+    var renderTable1;
+    var renderTable2;
+
+    function flushTable(){
+        renderTable1();
+        renderTable2();
+    }
+
     layui.config({
         base: '/static/plugins/dynamic-tree/module/'
     }).extend({
@@ -45,7 +59,44 @@
         var treetable = layui.treetable;
 
         // 渲染表格
-        var renderTable = function () {
+        renderTable2 = function () {
+            layer.load(2);
+            treetable.render({
+                treeColIndex: 1,
+                treeSpid: -1,
+                treeIdName: 'id',
+                treePidName: 'pid',
+                treeDefaultClose: true,
+                treeLinkage: false,
+                elem: '#table2',
+                url: '/machine/listLostMachine',
+                page: false,
+                cols: [[
+                    {type: 'numbers'},
+                    /*{field: 'pid', title: 'pid'},*/
+                    //{field: 'id', title: 'id', width: '8%'},
+                    {field: 'ip', title: '未知连接IP'}
+                ]],
+                done: function () {
+                    layer.closeAll('loading');
+                }
+            });
+        };
+        renderTable2();
+    });
+
+    layui.config({
+        base: '/static/plugins/dynamic-tree/module/'
+    }).extend({
+        treetable: 'treetable-lay/treetable'
+    }).use(['layer', 'table', 'treetable'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var layer = layui.layer;
+        var treetable = layui.treetable;
+
+        // 渲染表格
+        renderTable1 = function () {
             layer.load(2);
             treetable.render({
                 treeColIndex: 1,
@@ -75,10 +126,10 @@
             });
         };
 
-        renderTable();
+        renderTable1();
 
         $('#btn-refresh').click(function () {
-            renderTable();
+            flushTable();
         });
 
         $('#btn-add').click(function () {
@@ -105,7 +156,7 @@
                     if(res){
                         layer.closeAll();
                         layer.msg("保存成功");
-                        renderTable();
+                        flushTable();
                     }
                 }
                 ,btn2: function(){
@@ -183,7 +234,7 @@
                         if(res){
                             layer.closeAll();
                             layer.msg("保存成功");
-                            renderTable();
+                            flushTable();
                         }
                     }
                     ,btn2: function(){
@@ -211,7 +262,7 @@
                     success: function (data) {	//回调函数 和 后台返回的 数据
                         if (data == "ok") {
                             layer.msg("删除成功");
-                            renderTable();
+                            flushTable();
                         }
                     },
                     error: function (data) {
