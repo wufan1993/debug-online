@@ -25,26 +25,11 @@ public class MethodIntercept {
     @RuntimeType
     public static Object intercept(/*@This Object object,*/@Super Object pro, @Origin Method method, @SuperCall Callable<?> callable, @AllArguments Object[] args) throws Exception {
 
-        //Thread.currentThread().getStackTrace()[0].
         if (InterceptStatus.switchOff.get()) {
             //如果是accessor 那么直接退出
             if(!pro.getClass().getName().startsWith(method.getDeclaringClass().getName())){
                 return callable.call();
             }
-            /*Boolean tag = false;
-            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-            for (int i = 2; i < 8 && i < stackTrace.length; i++) {
-                String format = String.format("%s$accessor$", method.getName());
-                if (method.getDeclaringClass().getName().equals(stackTrace[i].getClassName())) {
-                    if (stackTrace[i].getMethodName().startsWith(format)) {
-                        tag = true;
-                        break;
-                    }
-                }
-            }
-            if (tag) {
-                return callable.call();
-            }*/
 
             //为了避免过度输出 因此要记录一下类方法缓存数据
             //是否总方法标志
@@ -91,6 +76,7 @@ public class MethodIntercept {
             if (flag || childFlag) {
                 //设置方法内的 本地ID
                 TrackContext.setParentId(methodId);
+                TrackContext.setExtendId(methodId);
             }
 
             //方法深度标记
@@ -102,7 +88,7 @@ public class MethodIntercept {
             }
 
             //输出方法类名 入参数
-            ProcessAgent process = new ProcessAgent(TrackContext.getRootId(), TrackContext.getParentId(), methodId);
+            ProcessAgent process = new ProcessAgent(TrackContext.getRootId(), TrackContext.getExtendId(), methodId);
 
             ProcessAgent param = new ProcessAgent(process, 0);
             param.setMethod(method.getName());
@@ -110,7 +96,7 @@ public class MethodIntercept {
             param.setTypeName(method.getDeclaringClass().getName());
             //LogTrack.appendLog("输出一个测试名称======================="+param.getTypeName());
             //判断对象大小
-            if (InterceptStatus.containMethodParamList(typeMethod) || flag) {
+            if (InterceptStatus.containMethodParamList(typeMethod) || flag || childFlag) {
                 param.setArgs(args);
             }
 
@@ -126,7 +112,7 @@ public class MethodIntercept {
                 //输出出参数
                 ProcessAgent processReturn = new ProcessAgent(process, 1);
                 processReturn.setCostTime(System.currentTimeMillis() - start);
-                if (InterceptStatus.containMethodParamList(typeMethod) || flag) {
+                if (InterceptStatus.containMethodParamList(typeMethod) || flag || childFlag) {
                     processReturn.setRes(call);
                 }
 
