@@ -96,7 +96,7 @@ public class MethodIntercept {
             param.setTypeName(method.getDeclaringClass().getName());
             //LogTrack.appendLog("输出一个测试名称======================="+param.getTypeName());
             //判断对象大小
-            if (InterceptStatus.containMethodParamList(typeMethod) || flag) {
+            if (InterceptStatus.containMethodParamList(typeMethod) || flag || childFlag) {
                 param.setArgs(args);
             }
 
@@ -112,7 +112,7 @@ public class MethodIntercept {
                 //输出出参数
                 ProcessAgent processReturn = new ProcessAgent(process, 1);
                 processReturn.setCostTime(System.currentTimeMillis() - start);
-                if (InterceptStatus.containMethodParamList(typeMethod) || flag) {
+                if (InterceptStatus.containMethodParamList(typeMethod) || flag || childFlag) {
                     processReturn.setRes(call);
                 }
 
