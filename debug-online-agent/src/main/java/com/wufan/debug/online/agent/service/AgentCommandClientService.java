@@ -49,7 +49,12 @@ public class AgentCommandClientService {
 
         AgentCommandEnum.CLEAR_MONITOR_METHOD.setConsumer(command -> InterceptStatus.clearMethodParamList());
 
-        AgentCommandEnum.CLIENT_REGEXP.setConsumer(command -> DebugAgent.packagePrefix = command);
+        AgentCommandEnum.CLIENT_REGEXP.setConsumer(command -> {
+            DebugAgent.packagePrefix = command;
+            if (DebugAgent.latch.getCount() != 0) {
+                DebugAgent.latch.countDown();
+            }
+        });
 
     }
 
