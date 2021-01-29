@@ -52,7 +52,7 @@ public class O2oAgentTestApplication extends WebMvcConfigurationSupport {
                     for (int i = 0; i < 100; i++) {
                         test.testExe1(i);
                         try {
-                            Thread.sleep(000);
+                            Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
