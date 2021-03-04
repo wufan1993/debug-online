@@ -30,13 +30,15 @@
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -100,7 +102,7 @@
                             <include>net.bytebuddy:byte-buddy:jar:</include>
                             <include>net.bytebuddy:byte-buddy-agent:jar:</include>
                             <include>org.java-websocket:Java-WebSocket:jar:</include>
-                            <!--<include>org.slf4j:slf4j-api:jar:</include>-->
+                            <include>org.slf4j:slf4j-api:jar:</include>
                         </includes>
                     </artifactSet>
                 </configuration>
