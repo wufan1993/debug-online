@@ -17,6 +17,8 @@
         <maven.test.skip>true</maven.test.skip>
         <!-- 自定义MANIFEST.MF -->
         <maven.configuration.manifestFile>src/main/resources/META-INF/MANIFEST.MF</maven.configuration.manifestFile>
+
+        <shade.package>com.wufan.debug.online.dependencies</shade.package>
     </properties>
 
 
@@ -30,13 +32,6 @@
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -91,9 +86,12 @@
                     </execution>
                 </executions>
                 <configuration>
-
+                    <shadedArtifactAttached>false</shadedArtifactAttached>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <createSourcesJar>true</createSourcesJar>
+                    <shadeSourcesContent>true</shadeSourcesContent>
                     <artifactSet>
-                        <includes>
+                        <!--<includes>
                             <include>com.wufan.debug.online:debug-online-common:jar:</include>
                             <include>com.fasterxml.jackson.core:jackson-databind:jar:</include>
                             <include>com.fasterxml.jackson.core:jackson-annotations:jar:</include>
@@ -103,8 +101,30 @@
                             <include>net.bytebuddy:byte-buddy-agent:jar:</include>
                             <include>org.java-websocket:Java-WebSocket:jar:</include>
                             <include>org.slf4j:slf4j-api:jar:</include>
-                        </includes>
+                        </includes>-->
+                        <excludes>
+
+                        </excludes>
                     </artifactSet>
+
+                    <relocations>
+                        <relocation>
+                            <pattern>org.java-websocket</pattern>
+                            <shadedPattern>${shade.package}.org.java-websocket</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.slf4j</pattern>
+                            <shadedPattern>${shade.package}.org.slf4j</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.javassist</pattern>
+                            <shadedPattern>${shade.package}.org.javassist</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>net.bytebuddy</pattern>
+                            <shadedPattern>${shade.package}.net.bytebuddy</shadedPattern>
+                        </relocation>
+                    </relocations>
                 </configuration>
             </plugin>
 
@@ -129,7 +149,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.6.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
