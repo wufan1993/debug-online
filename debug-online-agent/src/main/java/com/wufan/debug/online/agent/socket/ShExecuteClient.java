@@ -64,7 +64,7 @@ public class ShExecuteClient {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LogTrack.appendLog("线程中断异常" + e.getMessage());
             }
         }
     }

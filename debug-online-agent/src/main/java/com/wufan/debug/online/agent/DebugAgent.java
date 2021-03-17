@@ -56,9 +56,9 @@ public class DebugAgent {
         //暂停 5 秒 钟
         try {
             LogTrack.appendLog("暂停5秒钟 等候socket连接....");
-            latch.await(5,TimeUnit.SECONDS);
+            latch.await(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LogTrack.appendLog("系统异常" + e.getMessage());
         }
 
         if (packagePrefix == null) {
@@ -68,114 +68,116 @@ public class DebugAgent {
         LogTrack.appendLog("this is my agent：" + packagePrefix);
 
         //抽象类不拦截 静态方法不拦截
+        try {
+            AgentBuilder.Transformer transformer = (builder, typeDescription, classLoader, javaModule) -> {
 
-        AgentBuilder.Transformer transformer = (builder, typeDescription, classLoader, javaModule) -> {
+                LogTrack.appendLog("transformer load:" + typeDescription.getCanonicalName());
 
-            System.out.println("transformer load:" + typeDescription.getCanonicalName());
+                //TypeDescription.Generic superClass = typeDescription.getNestHost().getSuperClass();
 
-            //TypeDescription.Generic superClass = typeDescription.getNestHost().getSuperClass();
-
-            ElementMatcher.Junction<MethodDescription> methodIntercept = ElementMatchers.isMethod()/*.and(ElementMatchers.isSynthetic())*/
-                    //.and(ElementMatchers.not(ElementMatchers.isVirtual().and(ElementMatchers.isProtected())))
-                    .and(
-                            ElementMatchers.not(ElementMatchers.nameStartsWith("main"))
-                                    .and(ElementMatchers.not(ElementMatchers.isAbstract()))
-                                    .and(ElementMatchers.not(ElementMatchers.isStatic()))
-                                    .and(ElementMatchers.not(ElementMatchers.isGetter()))
-                                    .and(ElementMatchers.not(ElementMatchers.isSetter()))
-                                    .and(ElementMatchers.not(ElementMatchers.isBridge()))
-                                    .and(ElementMatchers.not(ElementMatchers.isSynthetic()))
-                                    .and(ElementMatchers.not(ElementMatchers.isConstructor()))
-                            //.and(ElementMatchers.not(ElementMatchers.isVirtual()))
-                    )
+                ElementMatcher.Junction<MethodDescription> methodIntercept = ElementMatchers.isMethod()/*.and(ElementMatchers.isSynthetic())*/
+                        //.and(ElementMatchers.not(ElementMatchers.isVirtual().and(ElementMatchers.isProtected())))
+                        .and(
+                                ElementMatchers.not(ElementMatchers.nameStartsWith("main"))
+                                        .and(ElementMatchers.not(ElementMatchers.isAbstract()))
+                                        .and(ElementMatchers.not(ElementMatchers.isStatic()))
+                                        .and(ElementMatchers.not(ElementMatchers.isGetter()))
+                                        .and(ElementMatchers.not(ElementMatchers.isSetter()))
+                                        .and(ElementMatchers.not(ElementMatchers.isBridge()))
+                                        .and(ElementMatchers.not(ElementMatchers.isSynthetic()))
+                                        .and(ElementMatchers.not(ElementMatchers.isConstructor()))
+                                //.and(ElementMatchers.not(ElementMatchers.isVirtual()))
+                        )
                     /*.or(
                             ElementMatchers.isVirtual()
                     )*/
-                    //.and(ElementMatchers.not(ElementMatchers.nameContains("$accessor$")))
-                    //.and(ElementMatchers.not(ElementMatchers.nameContains("$original$")))
-                    //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("<init>")))
-                    //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("lambda$main$0")))
+                        //.and(ElementMatchers.not(ElementMatchers.nameContains("$accessor$")))
+                        //.and(ElementMatchers.not(ElementMatchers.nameContains("$original$")))
+                        //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("<init>")))
+                        //.and(ElementMatchers.not(ElementMatchers.nameStartsWith("lambda$main$0")))
 
-                    //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
-                    //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
-                    ;
+                        //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
+                        //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
+                        ;
 
                     /*if(superClass!=null){
                         methodIntercept.and(ElementMatchers.not(ElementMatchers.isAccessibleTo(superClass.asErasure())));
                     }*/
 
-            DynamicType.Builder.MethodDefinition.ImplementationDefinition<?> main = builder
-                    //.method(ElementMatchers.any()) // 拦截任意方法
-                    .method(methodIntercept
-                            //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
-                            //.and(ElementMatchers.not(ElementMatchers.isAccessibleTo()))
-                            //.and(ElementMatchers.not(ElementMatchers.isStrict()))
+                DynamicType.Builder.MethodDefinition.ImplementationDefinition<?> main = builder
+                        //.method(ElementMatchers.any()) // 拦截任意方法
+                        .method(methodIntercept
+                                //.and(ElementMatchers.not(ElementMatchers.isTypeInitializer()))
+                                //.and(ElementMatchers.not(ElementMatchers.isAccessibleTo()))
+                                //.and(ElementMatchers.not(ElementMatchers.isStrict()))
 
                                     /*.and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.CLASS)))
                                     .and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.OBJECT)))
                                     .and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.UNDEFINED)))
                                     .and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.VOID)))*/
 
-                            //.and(ElementMatchers.not(ElementMatchers.isProtected()))
-                            //.and(ElementMatchers.not(ElementMatchers.isVirtual()))
-                    );
+                                //.and(ElementMatchers.not(ElementMatchers.isProtected()))
+                                //.and(ElementMatchers.not(ElementMatchers.isVirtual()))
+                        );
 
-            return main.intercept(MethodDelegation.to(MethodIntercept.class)); // 委托
-        };
+                return main.intercept(MethodDelegation.to(MethodIntercept.class)); // 委托
+            };
 
-        AgentBuilder.Listener listener = new AgentBuilder.Listener() {
-            @Override
-            public void onDiscovery(String s, ClassLoader classLoader, JavaModule javaModule, boolean b) {
+            AgentBuilder.Listener listener = new AgentBuilder.Listener() {
+                @Override
+                public void onDiscovery(String s, ClassLoader classLoader, JavaModule javaModule, boolean b) {
 
-            }
+                }
 
-            @Override
-            public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule, boolean b, DynamicType dynamicType) {
-                LogTrack.appendLog("onTransformation PreMainAgent get loaded typeDescription:" + typeDescription.getCanonicalName());
+                @Override
+                public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule, boolean b, DynamicType dynamicType) {
+                    LogTrack.appendLog("onTransformation PreMainAgent get loaded typeDescription:" + typeDescription.getCanonicalName());
 
-                MethodList<MethodDescription.InDefinedShape> declaredMethods = typeDescription.getDeclaredMethods();
-                declaredMethods.forEach(methodDescription -> {
-                    //System.out.println("onTransformation load:" +typeDescription.getCanonicalName()+"#"+ methodDescription.getActualName());
-                    //methodDescription.getDeclaringType().getCanonicalName();
-                });
-                //System.out.println("onTransformation PreMainAgent get loaded dynamicType:" + typeDescription.getCanonicalName());
-            }
+                    MethodList<MethodDescription.InDefinedShape> declaredMethods = typeDescription.getDeclaredMethods();
+                    declaredMethods.forEach(methodDescription -> {
+                        //System.out.println("onTransformation load:" +typeDescription.getCanonicalName()+"#"+ methodDescription.getActualName());
+                        //methodDescription.getDeclaringType().getCanonicalName();
+                    });
+                    //System.out.println("onTransformation PreMainAgent get loaded dynamicType:" + typeDescription.getCanonicalName());
+                }
 
-            @Override
-            public void onIgnored(TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule, boolean b) {
-                //System.out.println("onIgnored PreMainAgent get loaded dynamicType:" + typeDescription.getCanonicalName());
-            }
+                @Override
+                public void onIgnored(TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule, boolean b) {
+                    //System.out.println("onIgnored PreMainAgent get loaded dynamicType:" + typeDescription.getCanonicalName());
+                }
 
-            @Override
-            public void onError(String s, ClassLoader classLoader, JavaModule javaModule, boolean b, Throwable throwable) {
-                System.out.println("net.bytebuddy.agent.builder.AgentBuilder.Listener.onError:" + s + "异常:" + throwable.getMessage());
-            }
+                @Override
+                public void onError(String s, ClassLoader classLoader, JavaModule javaModule, boolean b, Throwable throwable) {
+                    LogTrack.appendLog("net.bytebuddy.agent.builder.AgentBuilder.Listener.onError:" + s + "异常:" + throwable.getMessage());
+                }
 
-            @Override
-            public void onComplete(String s, ClassLoader classLoader, JavaModule javaModule, boolean b) {
-                //System.out.println("onComplete PreMainAgent get loaded dynamicType:" + s);
-            }
+                @Override
+                public void onComplete(String s, ClassLoader classLoader, JavaModule javaModule, boolean b) {
+                    //System.out.println("onComplete PreMainAgent get loaded dynamicType:" + s);
+                }
 
-        };
+            };
 
-        new AgentBuilder
-                .Default()
-                .type(ElementMatchers.nameMatches(packagePrefix)
-                                .and(ElementMatchers.not(ElementMatchers.nameContains("$$")))
-                                .and(ElementMatchers.not(ElementMatchers.nameContains("aspect")))
-                                //.and(ElementMatchers.not(ElementMatchers.isAbstract()))
-                                .and(ElementMatchers.not(ElementMatchers.isAnnotation()))
-                                .and(ElementMatchers.not(ElementMatchers.isInterface()))
-                                .and(ElementMatchers.not(ElementMatchers.isEnum())
-                                        //.and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.UNDEFINED)))
-                                )
-                        /*.and(ElementMatchers.not(ElementMatchers.isStatic()))*/
+            new AgentBuilder
+                    .Default()
+                    .type(ElementMatchers.nameMatches(packagePrefix)
+                                    .and(ElementMatchers.not(ElementMatchers.nameContains("$$")))
+                                    .and(ElementMatchers.not(ElementMatchers.nameContains("aspect")))
+                                    //.and(ElementMatchers.not(ElementMatchers.isAbstract()))
+                                    .and(ElementMatchers.not(ElementMatchers.isAnnotation()))
+                                    .and(ElementMatchers.not(ElementMatchers.isInterface()))
+                                    .and(ElementMatchers.not(ElementMatchers.isEnum())
+                                            //.and(ElementMatchers.not(ElementMatchers.isDeclaredByGeneric(TypeDescription.Generic.UNDEFINED)))
+                                    )
+                            /*.and(ElementMatchers.not(ElementMatchers.isStatic()))*/
 
-                ) // 指定需要拦截的类
-                .transform(transformer)
-                .with(listener)
-                .installOn(inst);
-
+                    ) // 指定需要拦截的类
+                    .transform(transformer)
+                    .with(listener)
+                    .installOn(inst);
+        } catch (Throwable e) {
+            LogTrack.appendLog("系统JVM-AGENT控制异常" + e.getMessage());
+        }
     }
 
 

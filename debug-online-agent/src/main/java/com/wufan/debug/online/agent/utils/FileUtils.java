@@ -38,14 +38,14 @@ public class FileUtils {
                 try {
                     channel.write(buf);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LogTrack.appendLog("系统异常"+e.getMessage());
                 }
             };
             channelConsumer.accept(fileChannelConsumer);
             channel.close();
             fos.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogTrack.appendLog("系统异常"+e.getMessage());
         }
     }
 

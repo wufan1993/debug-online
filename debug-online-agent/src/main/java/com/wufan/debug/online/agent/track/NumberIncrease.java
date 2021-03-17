@@ -1,5 +1,7 @@
 package com.wufan.debug.online.agent.track;
 
+import com.wufan.debug.online.agent.utils.LogTrack;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.DelayQueue;
@@ -51,7 +53,7 @@ public class NumberIncrease {
             String uuid = take.getUuid();
             tagMap.remove(uuid);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LogTrack.appendLog("系统异常"+e.getMessage());
         }
 
     }
