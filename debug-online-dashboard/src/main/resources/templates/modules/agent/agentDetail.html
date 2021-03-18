@@ -31,6 +31,9 @@
                                                 lay-event="checkRes">出参</a>' : '' }}
 </script>
 
+<script type="text/html" id="costStyle">
+    {{d.costTime}} ms
+</script>
 
 <script>
     $(document).ready(function () {
@@ -81,10 +84,11 @@
                         {field: 'id', title: 'id', width: '10%'},
                         {field: "debugPort", templet: '#oper-col', title: 'oper', width: '14%'},
                         /*{field: 'pid', title: 'pid'},*/
-                        {field: 'typeName', title: '类名称', width: '44%'},
-                        {field: 'method', title: '具体方法', width: '22%'},
+                        {field: 'typeName', title: '类名称', width: '34%'},
+                        {field: 'method', title: '具体方法', width: '25%'},
                         /*{field: 'args', title: '入参'},
                         {field: 'res', title: '出参'},*/
+                        {field: 'costTime', title: '耗时', templet: '#costStyle', width: '10%'},
                         {field: 'message', title: '异常信息', width: '10%'}
                     ]],
                     id: 'topicList'

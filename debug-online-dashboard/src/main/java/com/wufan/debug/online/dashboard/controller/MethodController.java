@@ -1,7 +1,9 @@
 package com.wufan.debug.online.dashboard.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wufan.debug.online.dashboard.dao.BreakMapper;
 import com.wufan.debug.online.dashboard.dao.MethodMapper;
+import com.wufan.debug.online.dashboard.domain.BreakInfo;
 import com.wufan.debug.online.dashboard.domain.MethodInfo;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
@@ -39,6 +41,9 @@ public class MethodController extends BaseController{
 
     @Resource
     private MethodMapper methodMapper;
+
+    @Resource
+    private BreakMapper breakMapper;
 
     @Resource
     private AgentCommandServerService agentCommandServerService;
@@ -98,5 +103,18 @@ public class MethodController extends BaseController{
             }
         }
         return "fail";
+    }
+
+
+    @GetMapping("/listBreak")
+    @ResponseBody
+    public Map<String, Object> listBreak(String ip) {
+        QueryWrapper<BreakInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("ip",ip);
+        List<BreakInfo> methodInfoList = breakMapper.selectList(queryWrapper);
+        methodInfoList.forEach(breakInfo -> {
+            breakInfo.setId(0L);
+        });
+        return PackRes.getResult(methodInfoList);
     }
 }

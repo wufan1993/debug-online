@@ -1,5 +1,8 @@
 package com.wufan.debug.online.dashboard.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wufan.debug.online.dashboard.dao.BreakMapper;
+import com.wufan.debug.online.dashboard.domain.BreakInfo;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.dashboard.socket.server.AgentDashboardServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 
 /**
@@ -29,6 +33,10 @@ import java.util.HashMap;
 public class SwitchController {
 
 
+    @Resource
+    private BreakMapper breakMapper;
+
+
     @GetMapping("/setMonitorMethod")
     @ResponseBody
     public String setMonitorMethod(String username, boolean status, String typeName, String method) {
@@ -37,11 +45,21 @@ public class SwitchController {
             //开启
             log.info("开启IP方法断点{} {}",username,typeMethod);
             WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.ADD_MONITOR_METHOD,typeMethod));
+            //保存数据
+            BreakInfo breakInfo=new BreakInfo();
+            breakInfo.setBreakContent(typeMethod);
+            breakInfo.setIp(username);
+            breakMapper.insert(breakInfo);
             AgentDashboardServerEndpoint.userMethodMap.get(username).add(typeMethod);
         } else {
             log.info("关闭IP方法断点{} {}",username,typeMethod);
             //给远程端口发送开启发送命令
             WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.REMOVE_MONITOR_METHOD,typeMethod));
+
+            QueryWrapper<BreakInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("break_content", typeMethod);
+            queryWrapper.eq("ip", username);
+            breakMapper.delete(queryWrapper);
             AgentDashboardServerEndpoint.userMethodMap.get(username).remove(typeMethod);
         }
         return "成功";

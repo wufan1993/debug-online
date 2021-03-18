@@ -1,0 +1,60 @@
+<% layout('/layouts/index.html', {title: '断点方法列表', libs: []}){ %>
+<!-- ============================================================== -->
+
+<br>
+<h1>
+    Fire eye 火眼
+</h1>
+<br>
+<div class="layui-btn-group">
+    <button class="layui-btn" id="btn-refresh">刷新表格</button>
+</div>
+&nbsp;
+<div id="topicList">
+    <table id="table1" class="layui-table" lay-filter="table1"></table>
+</div>
+
+<% } %>
+
+<script>
+    $(document).ready(function () {
+
+        layui.config({
+            base: '/static/plugins/dynamic-tree/module/'
+        }).extend({
+            treetable: 'treetable-lay/treetable'
+        }).use(['layer', 'table', 'treetable'], function () {
+            var $ = layui.jquery;
+            var table = layui.table;
+            var layer = layui.layer;
+
+            // 渲染表格
+            var renderTable = function () {
+                table.render({
+                    elem: '#table1',
+                    url: '/method/listBreak?ip=${ip}',
+                    page: false,
+                    cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    cols: [[
+                        {type: 'numbers'},
+                        /*{field:'id', width:80, title: 'ID', sort: true},*/
+                        /*{field: 'pid', title: 'pid'},*/
+                        //{field: 'id', title: 'id', width: '8%'},
+                        {field: 'breakContent', title: '断点类方法'}
+                    ]],
+                    done: function () {
+                        layer.closeAll('loading');
+                    }
+                });
+            };
+            renderTable();
+
+            $('#btn-refresh').click(function () {
+                renderTable();
+            });
+
+        });
+
+    });
+
+</script>

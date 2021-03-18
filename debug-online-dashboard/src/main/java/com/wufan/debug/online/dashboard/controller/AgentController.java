@@ -60,6 +60,13 @@ public class AgentController {
         return "/modules/agent/agentList.html";
     }
 
+
+    @GetMapping("/listBreakList")
+    public String listBreakList(Model model, String username) {
+        model.addAttribute("ip", username);
+        return "/modules/agent/breakList.html";
+    }
+
     @GetMapping("/listAgentDetail")
     public String listAgentDetail(Model model, String username, String rootId) {
         model.addAttribute("username", username);

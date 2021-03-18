@@ -10,6 +10,7 @@
     <a class="layui-btn layui-btn-normal" id="btn-switchMonitorOn">开始拦截</a>
     <a class="layui-btn layui-btn-normal" id="btn-switchMonitorOff">暂停拦截</a>
     <a class="layui-btn layui-btn-normal" id="btn-clearMonitor">清空数据</a>
+    <button class="layui-btn" id="btn-break"  data-type="auto">断点列表</button>
 </div>
 <!--<div class="site-demo-button layui-col-lg6" id="layerDemo" style="margin-bottom: 0;">
     <button data-method="notice" class="layui-btn" id="noDataNotice">没出现数据？</button>
@@ -108,6 +109,10 @@
         $('#btn-clearMonitor').click(function () {
             clearMonitor();
             renderTable();
+        });
+
+        $('#btn-break').click(function () {
+            window.open("/agent/listBreakList?username=${username}");
         });
 
         $('#noDataNotice').click(function () {

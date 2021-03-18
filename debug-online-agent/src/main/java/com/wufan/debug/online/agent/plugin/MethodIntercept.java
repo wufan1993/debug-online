@@ -126,7 +126,7 @@ public class MethodIntercept {
                 //输出执行异常
                 ProcessAgent processError = new ProcessAgent(process, 2);
                 processError.setCostTime(System.currentTimeMillis() - start);
-                processError.setMessage(e.getMessage());
+                processError.setMessage(e.toString());
                 //发送第二步
                 ProcessSendSocket.toSocketJsonStr(processError);
                 throw e;
