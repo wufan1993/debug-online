@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS machine_info;
+/*DROP TABLE IF EXISTS machine_info;*/
 
-CREATE TABLE machine_info
+CREATE TABLE IF NOT EXISTS machine_info
 (
   id BIGINT(20) NOT NULL auto_increment COMMENT '主键ID',
   ip VARCHAR(30) NULL DEFAULT NULL COMMENT 'IP',
@@ -13,9 +13,9 @@ CREATE TABLE machine_info
   PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS method_info;
+/*DROP TABLE IF EXISTS method_info;*/
 
-CREATE TABLE method_info
+CREATE TABLE  IF NOT EXISTS method_info
 (
   id BIGINT(20) NOT NULL auto_increment COMMENT '主键ID',
   pid BIGINT(20) NOT NULL auto_increment COMMENT '父ID',
@@ -26,9 +26,9 @@ CREATE TABLE method_info
   PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS break_info;
-
-CREATE TABLE break_info
+/*DROP TABLE IF EXISTS break_info;
+*/
+CREATE TABLE  IF NOT EXISTS break_info
 (
   id BIGINT(20) NOT NULL auto_increment COMMENT '主键ID',
   ip VARCHAR(30) NULL DEFAULT NULL COMMENT 'IP',
