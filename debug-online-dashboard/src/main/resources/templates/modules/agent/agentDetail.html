@@ -32,7 +32,11 @@
 </script>
 
 <script type="text/html" id="costStyle">
+    {{#  if(d.costTime == null){ }}
+    todo
+    {{#  } else { }}
     {{d.costTime}} ms
+    {{#  } }}
 </script>
 
 <script>

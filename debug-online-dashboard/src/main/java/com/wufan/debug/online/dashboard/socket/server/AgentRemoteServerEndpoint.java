@@ -69,7 +69,7 @@ public class AgentRemoteServerEndpoint {
         //sendTextAll("欢迎用户【" + username + "】来到狼窝！");
         //如果服务器上存在方法列表，那么把方法列表更新到机器中
 
-        log.info("当前连接以建立重启恢复加载method" + username);
+        log.info("当前连接以建立重启恢复加载method=》" + username);
         agentCommandServerService.flushAllMethodInfo(username);
 
         //查询断点方法数据，并初始化
