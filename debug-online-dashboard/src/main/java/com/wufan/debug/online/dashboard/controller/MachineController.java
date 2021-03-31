@@ -33,12 +33,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MachineController extends BaseController {
 
-
-    /**
-     * 未连接机器集合
-     */
-    //public static Set<String> lostIpList=new HashSet<>();
-
     @Resource
     private MachineMapper machineMapper;
 
@@ -70,15 +64,6 @@ public class MachineController extends BaseController {
             return true;
             //return machineInfo.getId() != 1;
         }).collect(Collectors.toList());
-        /*List<AgentClient> clientList = null;
-        AtomicInteger integer = new AtomicInteger(1);
-        clientList = livingSessions.keySet().stream().map(username -> {
-            AgentClient client = new AgentClient();
-            client.setPid(-1);
-            client.setId(integer.getAndIncrement());
-            client.setUsername(username);
-            return client;
-        }).collect(Collectors.toList());*/
         return PackRes.getResult(machineInfoList);
     }
 

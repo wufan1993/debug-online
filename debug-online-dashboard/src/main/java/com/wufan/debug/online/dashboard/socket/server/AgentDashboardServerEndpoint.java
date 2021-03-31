@@ -12,10 +12,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 我本非凡
@@ -32,8 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class AgentDashboardServerEndpoint {
 
-    public static Map<String, List<String>> userMethodMap = new ConcurrentHashMap<>();
-
     /**
      * 前端一旦启用WebSocket,机会调用@OnOpen注解标注的方法
      *
@@ -42,11 +36,8 @@ public class AgentDashboardServerEndpoint {
      */
     @OnOpen
     public void openSession(@PathParam("username") String username, Session session) {
-        //this.suffix="client";
-        //添加前段session 后缀是client
         WebSocketSession.AGENT_DASHBOARD.putSession(username, session);
         log.info("当前连接以建立AGENT_CLIENT" + username);
-        userMethodMap.put(username, new ArrayList<>());
         //sendTextAll("欢迎用户【" + username + "】来到狼窝！");
     }
 

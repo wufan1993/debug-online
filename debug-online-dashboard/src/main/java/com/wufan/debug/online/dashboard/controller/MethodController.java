@@ -43,9 +43,6 @@ public class MethodController extends BaseController{
     private MethodMapper methodMapper;
 
     @Resource
-    private BreakMapper breakMapper;
-
-    @Resource
     private AgentCommandServerService agentCommandServerService;
 
     @GetMapping("/enterMethodList")
@@ -79,15 +76,6 @@ public class MethodController extends BaseController{
         QueryWrapper<MethodInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("ip",ip);
         List<MethodInfo> methodInfoList = methodMapper.selectList(queryWrapper);
-        /*List<AgentClient> clientList = null;
-        AtomicInteger integer = new AtomicInteger(1);
-        clientList = livingSessions.keySet().stream().map(username -> {
-            AgentClient client = new AgentClient();
-            client.setPid(-1);
-            client.setId(integer.getAndIncrement());
-            client.setUsername(username);
-            return client;
-        }).collect(Collectors.toList());*/
         return PackRes.getResult(methodInfoList);
     }
 
@@ -103,18 +91,5 @@ public class MethodController extends BaseController{
             }
         }
         return "fail";
-    }
-
-
-    @GetMapping("/listBreak")
-    @ResponseBody
-    public Map<String, Object> listBreak(String ip) {
-        QueryWrapper<BreakInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("ip",ip);
-        List<BreakInfo> methodInfoList = breakMapper.selectList(queryWrapper);
-        methodInfoList.forEach(breakInfo -> {
-            breakInfo.setId(0L);
-        });
-        return PackRes.getResult(methodInfoList);
     }
 }

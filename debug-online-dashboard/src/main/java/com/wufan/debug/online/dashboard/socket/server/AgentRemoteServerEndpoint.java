@@ -1,7 +1,7 @@
 package com.wufan.debug.online.dashboard.socket.server;
 
-import com.wufan.debug.online.dashboard.controller.MachineController;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
+import com.wufan.debug.online.dashboard.service.BreakMethodService;
 import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
 import com.wufan.debug.online.domain.AgentCommand;
@@ -37,6 +37,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class AgentRemoteServerEndpoint {
 
+    private static BreakMethodService breakMethodService;
+
+    //存储调用链数据
     public static Map<String, Map<String, List<ProcessAgent>>> userText = new ConcurrentHashMap<>();
 
     private static AgentCommandServerService agentCommandServerService;
@@ -44,8 +47,13 @@ public class AgentRemoteServerEndpoint {
 
     /*单例注入 由于AgentRemoteServerEndpoint 非单例 每次初始化会丢点service*/
     @Autowired
-    public void setCommandService(AgentCommandServerService agentCommandServerService){
-        AgentRemoteServerEndpoint.agentCommandServerService =agentCommandServerService;
+    public void setCommandService(AgentCommandServerService agentCommandServerService) {
+        AgentRemoteServerEndpoint.agentCommandServerService = agentCommandServerService;
+    }
+
+    @Autowired
+    public void setBreakService(BreakMethodService breakMethodService) {
+        AgentRemoteServerEndpoint.breakMethodService = breakMethodService;
     }
 
     /**
@@ -64,15 +72,8 @@ public class AgentRemoteServerEndpoint {
         log.info("当前连接以建立重启恢复加载method" + username);
         agentCommandServerService.flushAllMethodInfo(username);
 
-        //清空监控方法列表
-        WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.CLEAR_MONITOR_METHOD));
-        /*Optional.ofNullable(AgentDashboardServerEndpoint.userMethodMap.get(username)).ifPresent(userMethod -> {
-            if(userMethod)
-            userMethod.forEach(method -> {
-                //WebSocketSession.AGENT_CLIENT.sendText(username, "setAgentMonitor=>" + method);
-                AgentDashboardServerEndpoint.userMethodMap.get(username).add(method);
-            });
-        });*/
+        //查询断点方法数据，并初始化
+        breakMethodService.flushSynMethod(username);
     }
 
     /**
@@ -88,19 +89,19 @@ public class AgentRemoteServerEndpoint {
         //log.info("返回脚本执行结果" + username + "===>>>" + message);
         //WebSocketSession.AGENT_DASHBOARD.sendText(username, message);
         AgentCommand command = JsonUtils.fromJson(message, AgentCommand.class);
-        AgentCommandEnum commandEnum=AgentCommandEnum.getEnumByCommand(command.getCommand());
+        AgentCommandEnum commandEnum = AgentCommandEnum.getEnumByCommand(command.getCommand());
         //如果是发送数据
-        if(commandEnum==AgentCommandEnum.METHOD_DATA){
-            dealWithClientData(commandEnum,username);
+        if (commandEnum == AgentCommandEnum.METHOD_DATA) {
+            dealWithClientData(commandEnum, username);
         }
         //如果是获取配置信息
-        if(commandEnum==AgentCommandEnum.CLIENT_CONFIG){
+        if (commandEnum == AgentCommandEnum.CLIENT_CONFIG) {
             log.info("获取客户端连接正则数据==>>" + username + "===>>>" + message);
             //WebSocketSession.AGENT_DASHBOARD.sendText(username, message);
-            commandEnum.setConsumer((s)->{
-                String regexp=agentCommandServerService.getClientRegexp(username);
-                if(regexp!=null){
-                    AgentCommand agentCommand=new AgentCommand(AgentCommandEnum.CLIENT_REGEXP,regexp);
+            commandEnum.setConsumer((s) -> {
+                String regexp = agentCommandServerService.getClientRegexp(username);
+                if (regexp != null) {
+                    AgentCommand agentCommand = new AgentCommand(AgentCommandEnum.CLIENT_REGEXP, regexp);
                     WebSocketSession.AGENT_CLIENT.sendText(username, agentCommand);
                     //MachineController.lostIpList.remove(username);
                 }/* else {
@@ -112,8 +113,7 @@ public class AgentRemoteServerEndpoint {
     }
 
 
-
-    private void dealWithClientData(AgentCommandEnum agentCommandEnum,@PathParam("username") String username) {
+    private void dealWithClientData(AgentCommandEnum agentCommandEnum, @PathParam("username") String username) {
         agentCommandEnum.setConsumer(message -> {
             ProcessAgent agent = JsonUtils.fromJson(message, ProcessAgent.class);
             if (agent.getRootId() != null && userText.containsKey(username)) {
@@ -121,7 +121,7 @@ public class AgentRemoteServerEndpoint {
                 List<ProcessAgent> processAgents = stringListMap.computeIfAbsent(agent.getRootId(), k -> new ArrayList<>());
                 //发送给前段页面通知
                 if (agent.getPid() == 0 && agent.getId() == 0 && agent.getType() == 0) {
-                    AgentCommand messageCommand=new AgentCommand(AgentCommandEnum.MONITOR_METHOD,message);
+                    AgentCommand messageCommand = new AgentCommand(AgentCommandEnum.MONITOR_METHOD, message);
                     WebSocketSession.AGENT_DASHBOARD.sendText(username, messageCommand);
                     //todo
                     //log.info("开始拦截首次数据" + username + "===>>>" + message);
@@ -138,7 +138,7 @@ public class AgentRemoteServerEndpoint {
                             String np = agent.getId() + "" + agent.getPid();
                             if (cp.equals(np)) {
                                 ar.setRes(agent.getRes());
-                                if(agent.getMessage()!=null){
+                                if (agent.getMessage() != null) {
                                     ar.setMessage(agent.getMessage());
                                 }
                                 ar.setCostTime(agent.getCostTime());

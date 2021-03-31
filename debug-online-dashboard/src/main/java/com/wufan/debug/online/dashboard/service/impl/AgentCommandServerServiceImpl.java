@@ -9,12 +9,11 @@ import com.wufan.debug.online.dashboard.domain.MachineInfo;
 import com.wufan.debug.online.dashboard.domain.MethodInfo;
 import com.wufan.debug.online.dashboard.domain.MethodStack;
 import com.wufan.debug.online.dashboard.service.AgentCommandServerService;
+import com.wufan.debug.online.dashboard.service.BreakMethodService;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.dashboard.socket.server.AgentDashboardServerEndpoint;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -40,15 +39,6 @@ public class AgentCommandServerServiceImpl implements AgentCommandServerService 
 
     @Resource
     private MachineMapper machineMapper;
-
-    @Resource
-    private BreakMapper breakMapper;
-
-
-    @Override
-    public void executeCommand(AgentCommand agentCommand) {
-
-    }
 
     @Override
     public void flushAllMethodInfo(String ip) {
@@ -87,15 +77,6 @@ public class AgentCommandServerServiceImpl implements AgentCommandServerService 
                 AgentCommand childMethod = new AgentCommand(AgentCommandEnum.ADD_METHOD, childContent);
                 WebSocketSession.AGENT_CLIENT.sendText(ip, childMethod);
             });
-        });
-
-        //查询断点方法数据，并初始化
-        QueryWrapper<BreakInfo> breakQuery = new QueryWrapper<>();
-        breakQuery.eq("ip", ip);
-        List<BreakInfo> breakInfoList = breakMapper.selectList(breakQuery);
-        breakInfoList.forEach(breakInfo -> {
-            WebSocketSession.AGENT_CLIENT.sendText(ip, new AgentCommand(AgentCommandEnum.ADD_MONITOR_METHOD,breakInfo.getBreakContent()));
-            AgentDashboardServerEndpoint.userMethodMap.get(ip).add(breakInfo.getBreakContent());
         });
     }
 

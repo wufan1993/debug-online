@@ -1,10 +1,7 @@
 package com.wufan.debug.online.dashboard.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wufan.debug.online.dashboard.dao.BreakMapper;
-import com.wufan.debug.online.dashboard.domain.BreakInfo;
+import com.wufan.debug.online.dashboard.service.BreakMethodService;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.dashboard.socket.server.AgentDashboardServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
 import com.wufan.debug.online.domain.AgentCommand;
 import com.wufan.debug.online.model.AgentCommandEnum;
@@ -32,35 +29,18 @@ import java.util.HashMap;
 @Slf4j
 public class SwitchController {
 
-
     @Resource
-    private BreakMapper breakMapper;
-
+    private BreakMethodService breakMethodService;
 
     @GetMapping("/setMonitorMethod")
     @ResponseBody
     public String setMonitorMethod(String username, boolean status, String typeName, String method) {
         String typeMethod = typeName + "#" + method;
         if (status) {
-            //开启
-            log.info("开启IP方法断点{} {}",username,typeMethod);
-            WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.ADD_MONITOR_METHOD,typeMethod));
             //保存数据
-            BreakInfo breakInfo=new BreakInfo();
-            breakInfo.setBreakContent(typeMethod);
-            breakInfo.setIp(username);
-            breakMapper.insert(breakInfo);
-            AgentDashboardServerEndpoint.userMethodMap.get(username).add(typeMethod);
+            breakMethodService.insertOne(username,typeMethod);
         } else {
-            log.info("关闭IP方法断点{} {}",username,typeMethod);
-            //给远程端口发送开启发送命令
-            WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.REMOVE_MONITOR_METHOD,typeMethod));
-
-            QueryWrapper<BreakInfo> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("break_content", typeMethod);
-            queryWrapper.eq("ip", username);
-            breakMapper.delete(queryWrapper);
-            AgentDashboardServerEndpoint.userMethodMap.get(username).remove(typeMethod);
+            breakMethodService.deleteOne(username,typeMethod);
         }
         return "成功";
     }
@@ -71,9 +51,7 @@ public class SwitchController {
         if (status) {
             //开启
             log.info("当前连接以建立AGENT_CLIENT" + username);
-            //sendTextAll("欢迎用户【" + username + "】来到狼窝！");
             try {
-                //AgentRemoteServerEndpoint.userText.put(username, new HashMap<>());
                 //给远程端口发送开启发送命令
                 WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.OPEN_CLIENT));
                 log.info("启动客户端开启参数拦截" + username);
@@ -83,14 +61,7 @@ public class SwitchController {
         } else {
             //给远程端口发送开启发送命令
             WebSocketSession.AGENT_CLIENT.sendText(username, new AgentCommand(AgentCommandEnum.CLOSE_CLIENT));
-
-            //将当前用户移除
             log.info("当前连接以移除AGENT_CLIENT" + username);
-            //AgentRemoteServerEndpoint.userText.remove(username);
-            //给所有存活的用户发送消息
-            //sendTextAll("用户【" + username + "】离开狼窝！");
-            //给远程端口发送开启发送命令
-            //log.info("关闭客户端开启参数拦截" + username);
         }
         return "切换开关" + status;
     }
@@ -103,20 +74,4 @@ public class SwitchController {
         return "清空数据完成";
     }
 
-    /*@GetMapping("/sentMainMethod")
-    @ResponseBody
-    public String sentMainMethod(String username, String value) {
-
-        String[] split = value.split("\n");
-        if (split.length > 0) {
-            WebSocketSession.AGENT_CLIENT.sendText(username, "removeAllMethod");
-            Arrays.stream(split).forEach(method -> {
-                if (method.contains("#")) {
-                    //把它发送给监控端
-                    WebSocketSession.AGENT_CLIENT.sendText(username, "setAgentMethod=>" + method);
-                }
-            });
-        }
-        return "添加主方法数据完成";
-    }*/
 }

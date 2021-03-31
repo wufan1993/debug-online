@@ -1,9 +1,9 @@
 package com.wufan.debug.online.dashboard.controller;
 
 import com.wufan.debug.online.dashboard.socket.config.AgentList;
+import com.wufan.debug.online.dashboard.service.impl.BreakMethodServiceImpl;
 import com.wufan.debug.online.dashboard.socket.config.ProcessAgent;
 import com.wufan.debug.online.dashboard.socket.config.WebSocketSession;
-import com.wufan.debug.online.dashboard.socket.server.AgentDashboardServerEndpoint;
 import com.wufan.debug.online.dashboard.socket.server.AgentRemoteServerEndpoint;
 import com.wufan.debug.online.dashboard.util.PackRes;
 import lombok.extern.slf4j.Slf4j;
@@ -42,12 +42,7 @@ public class AgentController {
     @GetMapping("/listAgentList")
     public String listAgentList(Model model, String username) {
         model.addAttribute("username", username);
-        //开启监听并获取数据
-        /*AgentRemoteServerEndpoint.userText.computeIfAbsent(username,k->{
-            //给远程端口发送开启发送命令
-            WebSocketSession.AGENT_CLIENT.sendText(username, "start");
-            return new HashMap<>();
-        });*/
+
         model.addAttribute("agentHost", agentHost);
         AgentRemoteServerEndpoint.userText.put(username, new HashMap<>());
 
@@ -58,13 +53,6 @@ public class AgentController {
         }
 
         return "/modules/agent/agentList.html";
-    }
-
-
-    @GetMapping("/listBreakList")
-    public String listBreakList(Model model, String username) {
-        model.addAttribute("ip", username);
-        return "/modules/agent/breakList.html";
     }
 
     @GetMapping("/listAgentDetail")
@@ -117,7 +105,7 @@ public class AgentController {
                         processAgent.setPid(-1);
                     }
                     String typeMethod = processAgent.getTypeName() + "#" + processAgent.getMethod();
-                    if ((AgentDashboardServerEndpoint.userMethodMap.get(username).contains(typeMethod))) {
+                    if ((BreakMethodServiceImpl.breakMethodMap.get(username).contains(typeMethod))) {
                         processAgent.setDebugPort(true);
                     }
                 });
