@@ -21,12 +21,13 @@
 
 #### 安装教程
 
-1.  启动dashboard客户端，直接package或者install 模块 debug-online-dashboard,生成jar包，并按照启动spring-boot的jar启动方式启动即可
-2.  访问客户端http://localhost:8080，添加客户端信息，需要配置具体客户端IP和包路径的匹配正则(正则如：com.wufan.debug.online.test.method.*)
-3.  下载debug-agent.jar这个包，这个包在dashboard项目resources/static/data目录下
+1.  修改debug-online-dashboard 下配置文件 application-*.properties文件中的机器agent.remoteHost参数，值为启动机器的域名地址
+2.  直接package或者install 模块 debug-online-dashboard,生成jar包，按照启动spring-boot的jar启动方式部署到启动机器上,启动环境根据需要选择
+3.  访问客户端http://localhost:8080，添加客户端信息，需要配置具体客户端IP和包路径的匹配正则(正则如：com.wufan.debug.online.test.method.*)
+4.  下载debug-agent.jar这个包，这个包在dashboard项目resources/static/data目录下
      下载案例：http://localhost:8080/static/data/debug-agent.jar
-4.  在具体项目应用中，添加jvm启动参数 -javaagent:debug-agent.jar=客户端地址(如:49.232.171.225:8080)
-5.  打开dashboard客户端，可以看到具体机器已经注册到了dashboard上，可以开始进行项目调试
+5.  在具体项目应用中，添加jvm启动参数 -javaagent:debug-agent.jar=客户端地址(如:49.232.171.225:8080)
+6.  打开dashboard客户端，可以看到具体机器已经注册到了dashboard上，可以开始进行项目调试
 
 #### 使用说明
 
